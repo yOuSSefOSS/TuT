@@ -1,0 +1,2726 @@
+/* ==========================================================================
+   TuT Pharaonic Cafe Menu Creator - CSS Stylesheet
+   ========================================================================== */
+
+/* Global Variables & Dashboard Reset */
+:root {
+    --dash-bg: #0d0f14;
+    --dash-card-bg: rgba(22, 26, 37, 0.7);
+    --dash-sidebar-w: 420px;
+    --dash-text: #e2e8f0;
+    --dash-text-muted: #94a3b8;
+    --dash-gold: #d4af37;
+    --dash-gold-hover: #f3cf58;
+    --dash-border: rgba(255, 255, 255, 0.08);
+    --dash-accent: #0ea5e9;
+    --dash-danger: #ef4444;
+    
+    /* Live Preview Default Overrides (will be customized dynamically) */
+    --menu-bg: #ffffff;
+    --menu-text: #1a1a1a;
+    --menu-gold: #d4af37;
+    --menu-secondary: #0c1f40;
+    --menu-font-scale: 1;
+    --menu-spacing-multiplier: 1;
+    
+    /* Custom Styling Overrides */
+    --menu-size-title-multiplier: 100;
+    --menu-size-category-multiplier: 100;
+    --menu-size-item-multiplier: 100;
+    --menu-size-desc-multiplier: 100;
+    --menu-font-header: inherit;
+    --menu-font-body: inherit;
+    --menu-watermark-opacity: 0.15;
+    --menu-watermark-scale: 0.5;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--dash-bg);
+    color: var(--dash-text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ==========================================================================
+   Dashboard Shell Layout
+   ========================================================================== */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar Dashboard Style (Glassmorphism) */
+.sidebar {
+    width: var(--dash-sidebar-w);
+    min-width: var(--dash-sidebar-w);
+    height: 100%;
+    background-color: #121620;
+    border-right: 1px solid var(--dash-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--dash-border);
+    background: linear-gradient(135deg, #161a25 0%, #0d0f14 100%);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pharaoh-crown {
+    color: var(--dash-gold);
+    font-size: 24px;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+    animation: pulseGold 3s infinite ease-in-out;
+}
+
+@keyframes pulseGold {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); }
+    50% { filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.8)); }
+}
+
+.sidebar-header h1 {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.sidebar-header .subtitle {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--dash-gold);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* Tab Navigation */
+.sidebar-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--dash-border);
+    background-color: #0f121b;
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 14px 10px;
+    color: var(--dash-text-muted);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn i {
+    font-size: 16px;
+}
+
+.tab-btn:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.tab-btn.active {
+    color: var(--dash-gold);
+    border-bottom-color: var(--dash-gold);
+    background-color: rgba(212, 175, 55, 0.05);
+}
+
+/* Sidebar Scrollable Panel Content */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+    animation: fadeInTab 0.3s ease-out;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    border-left: 3px solid var(--dash-gold);
+    padding-left: 10px;
+    letter-spacing: 1px;
+}
+
+.subsection-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: #fff;
+    margin: 24px 0 8px 0;
+    letter-spacing: 1px;
+}
+
+.panel-desc {
+    font-size: 12px;
+    color: var(--dash-text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Form Controls (Editor Interface)
+   ========================================================================== */
+.control-group {
+    margin-bottom: 20px;
+}
+
+.control-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--dash-text-muted);
+    margin-bottom: 8px;
+}
+
+.control-group input[type="text"],
+.control-group select,
+.control-group textarea {
+    width: 100%;
+    background-color: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.control-group input[type="text"]:focus,
+.control-group select:focus,
+.control-group textarea:focus {
+    border-color: var(--dash-gold);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
+    background-color: rgba(22, 26, 37, 0.9);
+}
+
+.row-controls {
+    display: flex;
+    gap: 16px;
+}
+
+.half {
+    flex: 1;
+}
+
+/* Range Slider */
+.range-slider-container {
+    display: flex;
+    align-items: center;
+}
+
+.range-slider-container input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    background: var(--dash-border);
+    height: 4px;
+    border-radius: 2px;
+    outline: none;
+}
+
+.range-slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--dash-gold);
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+    transition: background 0.2s;
+}
+
+.range-slider-container input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--dash-gold-hover);
+}
+
+/* Custom Checkbox Toggle */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dash-text);
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.slider-toggle {
+    width: 38px;
+    height: 20px;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    position: relative;
+    transition: background 0.3s;
+    display: inline-block;
+}
+
+.slider-toggle::before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #fff;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s;
+}
+
+.toggle-switch input:checked + .slider-toggle {
+    background-color: var(--dash-gold);
+}
+
+.toggle-switch input:checked + .slider-toggle::before {
+    transform: translateX(18px);
+}
+
+/* Custom Color overrides grid */
+.color-overrides-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.color-picker-wrapper input[type="color"] {
+    border: none;
+    width: 30px;
+    height: 30px;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-picker-wrapper span {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dash-text-muted);
+}
+
+/* Logo selector */
+.icon-selector {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.icon-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    border-radius: 6px;
+    border: 1px solid var(--dash-border);
+    background-color: var(--dash-card-bg);
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--dash-text-muted);
+    transition: all 0.25s;
+}
+
+.icon-option:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,0.2);
+}
+
+.icon-option.active {
+    border-color: var(--dash-gold);
+    color: var(--dash-gold);
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.icon-option svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Buttons */
+.btn {
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--dash-gold);
+    color: #0d0f14;
+}
+
+.btn-primary:hover {
+    background-color: var(--dash-gold-hover);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--dash-text);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-secondary-outline {
+    background: none;
+    border: 1px solid var(--dash-border);
+    color: var(--dash-text);
+}
+
+.btn-secondary-outline:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--dash-text-muted);
+}
+
+.btn-danger {
+    background-color: var(--dash-danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #ef4444dd;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 11px;
+}
+
+.btn-lg {
+    padding: 14px 20px;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+/* Sidebar Action Buttons at bottom */
+.sidebar-actions {
+    padding: 24px;
+    border-top: 1px solid var(--dash-border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #0f121b;
+}
+
+.sidebar-actions .btn {
+    width: 100%;
+}
+
+/* ==========================================================================
+   Templates Tab Layout
+   ========================================================================== */
+.templates-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.template-card {
+    background-color: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.template-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.template-card.active {
+    border-color: var(--dash-gold);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+.template-preview-thumb {
+    height: 100px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Custom mini thumbnail renderings for template cards */
+.thumb-gold-cartouche { background: #111; color: #d4af37; border: 2px double #d4af37; }
+.thumb-lapis-royal { background: #0c1f40; color: #d4af37; }
+.thumb-papyrus-scroll { background: #f4edd8; color: #3d2a1b; border: 1px solid #c4b595; }
+.thumb-emerald-nile { background: #072a1e; color: #d4af37; }
+.thumb-sandstone-tomb { background: #dfc49c; color: #4a3319; }
+.thumb-modern-giza { background: #fff; color: #111; border: 1px solid #ddd; }
+.thumb-sun-of-amon { background: #fffde6; color: #8c6b1b; }
+.thumb-turquoise-bazaar { background: #fcf9f2; color: #008080; border-top: 3px solid #008080; }
+.thumb-nefertiti-elegant { background: #faf4eb; color: #7d5c48; }
+.thumb-hieroglyph-deco { background: #1c1c1c; color: #e5c158; }
+.thumb-obsidian-night { background: #1a1a1a; color: #00e5ff; }
+.thumb-alexandria-bistro { background: #4a0d0d; color: #f4edd8; }
+.thumb-sacred-scarab { background: #191528; color: #cba154; border: 1px dashed #cba154; }
+.thumb-karnak-pillar { background: #e3a87c; color: #3d2f25; border-left: 3px solid #3d2f25; border-right: 3px solid #3d2f25; }
+.thumb-queen-cleopatra { background: #34143a; color: #e0a6b5; border: 1px double #e0a6b5; }
+.thumb-valley-kings { background: #22252a; color: #ffcc00; }
+.thumb-horus-falcon { background: #2f3640; color: #d1a153; }
+.thumb-sacred-lotus { background: #e8efe9; color: #8c5a3c; border-radius: 12px 12px 0 0; }
+.thumb-isis-blessing { background: #fbf5e6; color: #d46a43; border: 1px solid #d46a43; }
+.thumb-anubis-guard { background: #0d0d0d; color: #e05a36; border-bottom: 3px solid #e05a36; }
+.thumb-sphinx-monolith { background: #d0d3d4; color: #34495e; border: 2px solid #34495e; }
+.thumb-avaris-oasis { background: #0a3c2c; color: #ffd700; }
+.thumb-ramses-eternal { background: #721c24; color: #ffd700; border: 2px solid #ffd700; }
+.thumb-osiris-rebirth { background: #082c33; color: #c89d7c; }
+.thumb-gilded-pharaoh { background: #f4d068; color: #0f2347; border: 2px solid #0f2347; }
+.thumb-bastet-cat { background: #fdfbf7; color: #4e354a; }
+.thumb-sobek-river { background: #132e27; color: #bda55d; }
+.thumb-heliopolis-sun { background: linear-gradient(135deg, #fff0db, #ffe0b2); color: #d48f21; }
+.thumb-ptah-architect { background: #2c3e50; color: #cfd8dc; }
+.thumb-hathor-love { background: #fbf1ee; color: #4a2c2a; border-top: 3px solid #d4af37; }
+.thumb-khnum-clay { background: #a0522d; color: #faf0e6; }
+.thumb-thoth-wisdom { background: #faf6eb; color: #2b353b; border: 1px solid #2b353b; }
+.thumb-sekhmet-fire { background: #2b0d0d; color: #f39c12; }
+.thumb-memphis-classic { background: #fdfaf2; color: #111; border: 2px solid #d4af37; }
+.thumb-amun-shadow { background: #1e2022; color: #bfa15f; }
+.thumb-nile-delta { background: #224446; color: #e5c060; }
+
+.template-card span {
+    font-size: 11px;
+    font-weight: 600;
+    display: block;
+    color: var(--dash-text);
+}
+
+/* ==========================================================================
+   Content Tab - Category Accordion & Items Editor
+   ========================================================================== */
+.content-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.accordion-item {
+    background-color: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.25s;
+}
+
+.accordion-item.active {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.accordion-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    background-color: rgba(15, 18, 27, 0.4);
+}
+
+.accordion-header:hover {
+    background-color: rgba(15, 18, 27, 0.8);
+}
+
+.accordion-header .drag-handle {
+    color: var(--dash-text-muted);
+    cursor: grab;
+    font-size: 14px;
+}
+
+.accordion-header .category-title-text {
+    flex: 1;
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+}
+
+.accordion-header .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.accordion-header .icon-collapse {
+    color: var(--dash-text-muted);
+    transition: transform 0.25s;
+    font-size: 12px;
+}
+
+.accordion-item.active .icon-collapse {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    display: none;
+    padding: 18px;
+    border-top: 1px solid var(--dash-border);
+    background-color: rgba(9, 11, 16, 0.3);
+}
+
+.accordion-item.active .accordion-content {
+    display: block;
+}
+
+/* Item editor blocks inside accordion */
+.item-editor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.item-editor-card {
+    background-color: rgba(15, 18, 27, 0.6);
+    border: 1px solid var(--dash-border);
+    border-radius: 6px;
+    padding: 12px;
+    position: relative;
+}
+
+.item-editor-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.item-editor-row.title-price {
+    align-items: center;
+}
+
+.item-editor-card input.item-name {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 1px dashed var(--dash-border);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 0;
+    outline: none;
+}
+
+.item-editor-card input.item-name:focus {
+    border-bottom-color: var(--dash-gold);
+}
+
+.item-editor-card input.item-price {
+    width: 70px;
+    background: none;
+    border: none;
+    border-bottom: 1px dashed var(--dash-border);
+    color: var(--dash-gold);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+    padding: 4px 0;
+    outline: none;
+}
+
+.item-editor-card input.item-price:focus {
+    border-bottom-color: var(--dash-gold);
+}
+
+.item-editor-card textarea.item-desc {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px dashed var(--dash-border);
+    color: var(--dash-text-muted);
+    font-size: 11px;
+    padding: 4px 0;
+    resize: none;
+    outline: none;
+}
+
+.item-editor-card textarea.item-desc:focus {
+    border-bottom-color: var(--dash-gold);
+    color: #fff;
+}
+
+.item-editor-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.item-tag-selector {
+    display: flex;
+    gap: 6px;
+}
+
+.tag-badge-option {
+    font-size: 9px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--dash-border);
+    cursor: pointer;
+    color: var(--dash-text-muted);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.tag-badge-option:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,0.2);
+}
+
+.tag-badge-option.active {
+    background-color: var(--dash-gold);
+    color: #0d0f14;
+    border-color: var(--dash-gold);
+}
+
+.tag-badge-option.active.tag-best {
+    background-color: var(--dash-gold);
+}
+.tag-badge-option.active.tag-new {
+    background-color: var(--dash-accent);
+    border-color: var(--dash-accent);
+    color: #fff;
+}
+.tag-badge-option.active.tag-royal {
+    background-color: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+}
+
+/* Order buttons */
+.order-btn-group {
+    display: flex;
+    gap: 4px;
+}
+
+.order-btn {
+    background: none;
+    border: none;
+    color: var(--dash-text-muted);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 11px;
+    transition: color 0.2s;
+}
+
+.order-btn:hover {
+    color: #fff;
+}
+
+/* ==========================================================================
+   Preview Viewport & Paper Scaling System
+   ========================================================================== */
+.preview-viewport {
+    flex: 1;
+    height: 100%;
+    background-color: #07090e;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(26, 32, 53, 0.4) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(13, 17, 30, 0.8) 0px, transparent 50%);
+    display: block;
+    overflow-y: auto;
+    padding: 40px 30px;
+    position: relative;
+}
+
+/* Scale viewport wrapper */
+.page-scaler-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    transform-origin: top center;
+    transition: transform 0.2s ease-out;
+}
+
+/* Physical Menu Canvas */
+.menu-paper-page {
+    background-color: var(--menu-bg);
+    color: var(--menu-text);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 5px 15px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.4s, color 0.4s;
+    
+    /* Strict printing aspect ratios */
+    --a4-w: 210mm;
+    --a4-h: 297mm;
+}
+
+/* Orientation modes */
+.menu-paper-page.portrait {
+    width: var(--a4-w);
+    height: var(--a4-h);
+    padding: 15mm;
+}
+
+.menu-paper-page.landscape {
+    width: var(--a4-h);
+    height: var(--a4-w);
+    padding: 15mm;
+}
+
+/* ==========================================================================
+   Pharaonic Design Render Nodes
+   ========================================================================== */
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Header Node */
+.menu-header {
+    text-align: center;
+    margin-bottom: 8mm;
+    position: relative;
+}
+
+.menu-logo-container {
+    margin-bottom: 4mm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-logo-container svg {
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s;
+}
+
+.menu-title {
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 2mm;
+}
+
+.menu-tagline {
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 4mm;
+}
+
+.menu-header-divider {
+    height: 1px;
+    width: 60%;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Body / Category Grid Layout */
+.menu-body {
+    flex: 1;
+    display: grid;
+    grid-gap: 8mm;
+    align-content: start;
+}
+
+/* Dynamic columns based on layout spacing or landscape */
+.menu-paper-page.portrait .menu-body {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.menu-paper-page.landscape .menu-body {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* In case we have odd number of categories, allow landscape tweaks */
+.menu-category-node {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.menu-category-title-container {
+    margin-bottom: 4mm;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-category-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+}
+
+/* Item List */
+.menu-item-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item-node {
+    display: flex;
+    flex-direction: column;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.menu-item-main-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.menu-item-name {
+    font-weight: 600;
+    font-size: 13.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Small tag badges */
+.menu-item-badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+.menu-item-price {
+    font-weight: 700;
+    font-size: 13.5px;
+    white-space: nowrap;
+}
+
+/* Dotted Leader Line styling */
+.dotted-leader {
+    flex: 1;
+    border-bottom: 1px dotted currentColor;
+    margin: 0 8px;
+    opacity: 0.35;
+    position: relative;
+    top: -3px;
+}
+
+.menu-item-description {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-top: 1mm;
+    opacity: 0.85;
+}
+
+/* Footer Section */
+.menu-footer {
+    text-align: center;
+    margin-top: 8mm;
+    padding-top: 4mm;
+    border-top: 1px solid transparent;
+    font-size: 10px;
+    letter-spacing: 1px;
+    line-height: 1.4;
+}
+
+/* Font and margin adjustments based on state */
+.menu-paper-page {
+    font-size: calc(14px * var(--menu-font-scale));
+}
+.menu-title { font-size: calc(34px * var(--menu-font-scale) * (var(--menu-size-title-multiplier) / 100)); }
+.menu-tagline { font-size: calc(14px * var(--menu-font-scale) * (var(--menu-size-desc-multiplier) / 100)); }
+.menu-category-title { font-size: calc(17px * var(--menu-font-scale) * (var(--menu-size-category-multiplier) / 100)); }
+.menu-item-name { font-size: calc(13.5px * var(--menu-font-scale) * (var(--menu-size-item-multiplier) / 100)); }
+.menu-item-price { font-size: calc(13.5px * var(--menu-font-scale) * (var(--menu-size-item-multiplier) / 100)); }
+.menu-item-description { font-size: calc(10.5px * var(--menu-font-scale) * (var(--menu-size-desc-multiplier) / 100)); }
+.menu-footer { font-size: calc(10px * var(--menu-font-scale)); }
+
+/* Custom Font Overrides */
+.menu-paper-page.custom-fonts-active .menu-title,
+.menu-paper-page.custom-fonts-active .menu-category-title {
+    font-family: var(--menu-font-header) !important;
+}
+.menu-paper-page.custom-fonts-active .menu-item-name,
+.menu-paper-page.custom-fonts-active .menu-item-description,
+.menu-paper-page.custom-fonts-active .menu-tagline,
+.menu-paper-page.custom-fonts-active .menu-footer {
+    font-family: var(--menu-font-body) !important;
+}
+
+/* Item Spacing Multipliers */
+.spacing-1 .menu-item-node { margin-bottom: 1.5mm; }
+.spacing-1 .menu-category-node { margin-bottom: 1mm; }
+.spacing-2 .menu-item-node { margin-bottom: 2.5mm; }
+.spacing-2 .menu-category-node { margin-bottom: 2mm; }
+.spacing-3 .menu-item-node { margin-bottom: 4mm; }
+.spacing-3 .menu-category-node { margin-bottom: 4mm; }
+.spacing-4 .menu-item-node { margin-bottom: 6mm; }
+.spacing-4 .menu-category-node { margin-bottom: 6mm; }
+.spacing-5 .menu-item-node { margin-bottom: 9mm; }
+.spacing-5 .menu-category-node { margin-bottom: 9mm; }
+
+
+/* ==========================================================================
+   12 PHARAONIC THEMES DEFINITIONS
+   ========================================================================== */
+
+/* 1. Golden Cartouche: High contrast black with gold frames and cartouche borders */
+.theme-golden-cartouche {
+    --menu-bg: #111111;
+    --menu-text: #f3e5ab;
+    --menu-gold: #d4af37;
+    --menu-secondary: #c5a028;
+}
+.theme-golden-cartouche .menu-container {
+    border: 4px double var(--menu-gold);
+    outline: 1px solid var(--menu-gold);
+    outline-offset: 4px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-golden-cartouche .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+.theme-golden-cartouche .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-golden-cartouche .menu-item-name {
+    font-family: 'Cinzel', serif;
+}
+.theme-golden-cartouche .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-golden-cartouche .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #111;
+}
+.theme-golden-cartouche .menu-header-divider {
+    border-bottom: 1px solid var(--menu-gold);
+}
+.theme-golden-cartouche svg {
+    fill: var(--menu-gold);
+}
+
+/* 2. Lapis Royal: Royal blue background, gold text, lapis borders */
+.theme-lapis-royal {
+    --menu-bg: #0b1c3a;
+    --menu-text: #ffffff;
+    --menu-gold: #e2b740;
+    --menu-secondary: #1e3f7a;
+}
+.theme-lapis-royal .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 8px;
+    padding: 8mm;
+    height: 100%;
+    background: linear-gradient(145deg, var(--menu-bg) 0%, rgba(0, 0, 0, 0.45) 100%);
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+}
+.theme-lapis-royal .menu-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+}
+.theme-lapis-royal .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(226, 183, 64, 0.3);
+    padding-bottom: 4px;
+}
+.theme-lapis-royal .menu-category-title-container {
+    justify-content: center;
+}
+.theme-lapis-royal .menu-item-name {
+    font-family: 'Marcellus', sans-serif;
+}
+.theme-lapis-royal .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-lapis-royal .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+    border: 1px solid var(--menu-gold);
+}
+.theme-lapis-royal .menu-header-divider {
+    background: linear-gradient(to right, transparent, var(--menu-gold), transparent);
+    height: 2px;
+}
+.theme-lapis-royal svg {
+    fill: var(--menu-gold);
+}
+
+/* 3. Papyrus Scroll: Papyrus parchment texture, dark ink */
+.theme-papyrus-scroll {
+    --menu-bg: #f5edd6;
+    --menu-text: #2f2214;
+    --menu-gold: #c29545;
+    --menu-secondary: #5e472a;
+}
+.theme-papyrus-scroll::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        radial-gradient(rgba(0,0,0,0.02) 20%, transparent 20%),
+        radial-gradient(rgba(0,0,0,0.02) 20%, transparent 20%);
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 1;
+}
+.theme-papyrus-scroll .menu-container {
+    border: 12px solid var(--menu-secondary);
+    border-image: repeating-linear-gradient(45deg, var(--menu-secondary), var(--menu-secondary) 10px, rgba(0,0,0,0.15) 10px, rgba(0,0,0,0.15) 20px) 20;
+    padding: 6mm;
+    height: 100%;
+}
+.theme-papyrus-scroll .menu-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--menu-secondary);
+}
+.theme-papyrus-scroll .menu-category-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-secondary);
+    border-bottom: 2px dashed var(--menu-secondary);
+}
+.theme-papyrus-scroll .menu-item-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+.theme-papyrus-scroll .menu-item-price {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-secondary);
+}
+.theme-papyrus-scroll .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-papyrus-scroll .menu-header-divider {
+    border-bottom: 1px solid var(--menu-secondary);
+}
+.theme-papyrus-scroll svg {
+    fill: var(--menu-secondary);
+}
+
+/* 4. Emerald Nile: Forest green with gold accents */
+.theme-emerald-nile {
+    --menu-bg: #072a1f;
+    --menu-text: #f0e6cf;
+    --menu-gold: #dfb75c;
+    --menu-secondary: #0f4634;
+}
+.theme-emerald-nile .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 20px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-emerald-nile .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-emerald-nile .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+    text-transform: uppercase;
+}
+.theme-emerald-nile .menu-category-title-container {
+    border-bottom: 1px solid rgba(223, 183, 92, 0.4);
+    padding-bottom: 4px;
+}
+.theme-emerald-nile .menu-item-name {
+    font-family: 'Marcellus', sans-serif;
+}
+.theme-emerald-nile .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-emerald-nile .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #072a1f;
+}
+.theme-emerald-nile svg {
+    fill: var(--menu-gold);
+}
+
+/* 5. Sandstone Tomb: Warm desert terracotta and sandstone */
+.theme-sandstone-tomb {
+    --menu-bg: #ebd4b0;
+    --menu-text: #443220;
+    --menu-gold: #b38827;
+    --menu-secondary: #966b43;
+}
+.theme-sandstone-tomb .menu-container {
+    border: 3px solid var(--menu-secondary);
+    padding: 8mm;
+    height: 100%;
+    background-color: var(--menu-bg);
+}
+.theme-sandstone-tomb .menu-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-text);
+}
+.theme-sandstone-tomb .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-text);
+    font-weight: 900;
+}
+.theme-sandstone-tomb .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-secondary);
+    padding-bottom: 2px;
+}
+.theme-sandstone-tomb .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.theme-sandstone-tomb .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-sandstone-tomb .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-sandstone-tomb svg {
+    fill: var(--menu-secondary);
+}
+
+/* 6. Modern Giza: Minimalist white, thin gold lines, sharp modern */
+.theme-modern-giza {
+    --menu-bg: #ffffff;
+    --menu-text: #1a1a1a;
+    --menu-gold: #c29929;
+    --menu-secondary: #efefef;
+}
+.theme-modern-giza .menu-container {
+    border: 1px solid #1a1a1a;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-modern-giza .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: #1a1a1a;
+    letter-spacing: 6px;
+}
+.theme-modern-giza .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: #1a1a1a;
+}
+.theme-modern-giza .menu-category-title-container {
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 4px;
+}
+.theme-modern-giza .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+.theme-modern-giza .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-modern-giza .menu-item-badge {
+    border: 1px solid #1a1a1a;
+    color: #1a1a1a;
+    background: none;
+}
+.theme-modern-giza svg {
+    fill: #1a1a1a;
+}
+
+/* 7. Sun of Amon: Warm airy yellow and gold */
+.theme-sun-of-amon {
+    --menu-bg: #fffbf0;
+    --menu-text: #61461b;
+    --menu-gold: #d4af37;
+    --menu-secondary: #b58c1a;
+}
+.theme-sun-of-amon .menu-container {
+    border: 1px solid var(--menu-gold);
+    border-radius: 30px;
+    padding: 8mm;
+    height: 100%;
+}
+.theme-sun-of-amon .menu-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-secondary);
+}
+.theme-sun-of-amon .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-secondary);
+}
+.theme-sun-of-amon .menu-category-title-container {
+    justify-content: center;
+    border-bottom: 2px dashed rgba(212, 175, 55, 0.4);
+}
+.theme-sun-of-amon .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+.theme-sun-of-amon .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-sun-of-amon .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #fff;
+}
+.theme-sun-of-amon svg {
+    fill: var(--menu-gold);
+}
+
+/* 8. Turquoise Bazaar: Turquoise & warm gold details */
+.theme-turquoise-bazaar {
+    --menu-bg: #faf7f2;
+    --menu-text: #2c3e50;
+    --menu-gold: #d5b869;
+    --menu-secondary: #008080;
+}
+.theme-turquoise-bazaar .menu-container {
+    border-top: 10px solid var(--menu-secondary);
+    border-bottom: 10px solid var(--menu-secondary);
+    border-left: 2px solid var(--menu-gold);
+    border-right: 2px solid var(--menu-gold);
+    padding: 8mm;
+    height: 100%;
+}
+.theme-turquoise-bazaar .menu-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-secondary);
+}
+.theme-turquoise-bazaar .menu-category-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-secondary);
+}
+.theme-turquoise-bazaar .menu-category-title-container {
+    border-bottom: 1px solid rgba(0, 128, 128, 0.2);
+}
+.theme-turquoise-bazaar .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+.theme-turquoise-bazaar .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-turquoise-bazaar .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-turquoise-bazaar svg {
+    fill: var(--menu-secondary);
+}
+
+/* 9. Nefertiti Elegant: Delicate soft rose sand luxury */
+.theme-nefertiti-elegant {
+    --menu-bg: #f9f3ec;
+    --menu-text: #59473b;
+    --menu-gold: #c89d7c;
+    --menu-secondary: #907662;
+}
+.theme-nefertiti-elegant .menu-container {
+    border: 1px solid rgba(144, 118, 98, 0.2);
+    outline: 1px solid rgba(144, 118, 98, 0.2);
+    outline-offset: 6px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-nefertiti-elegant .menu-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 4px;
+}
+.theme-nefertiti-elegant .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-secondary);
+    font-style: italic;
+}
+.theme-nefertiti-elegant .menu-category-title-container {
+    border-bottom: 1px solid rgba(144, 118, 98, 0.3);
+    justify-content: center;
+}
+.theme-nefertiti-elegant .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-nefertiti-elegant .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-nefertiti-elegant .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #fff;
+}
+.theme-nefertiti-elegant svg {
+    fill: var(--menu-secondary);
+}
+
+/* 10. Hieroglyph Deco: Vintage deco fused with Egyptian geometries */
+.theme-hieroglyph-deco {
+    --menu-bg: #1c1c1c;
+    --menu-text: #efd07b;
+    --menu-gold: #d4af37;
+    --menu-secondary: #8c732b;
+}
+.theme-hieroglyph-deco .menu-container {
+    border: 4px solid var(--menu-gold);
+    border-radius: 4px;
+    padding: 8mm;
+    height: 100%;
+    position: relative;
+}
+.theme-hieroglyph-deco .menu-container::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 1px solid var(--menu-gold);
+    pointer-events: none;
+}
+.theme-hieroglyph-deco .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-hieroglyph-deco .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+}
+.theme-hieroglyph-deco .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-hieroglyph-deco .menu-item-name {
+    font-family: 'Marcellus', sans-serif;
+}
+.theme-hieroglyph-deco .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-hieroglyph-deco .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-hieroglyph-deco svg {
+    fill: var(--menu-gold);
+}
+
+/* 11. Obsidian Night: Charcoal matte, neon glowing turquoise accents */
+.theme-obsidian-night {
+    --menu-bg: #12141a;
+    --menu-text: #e2e8f0;
+    --menu-gold: #00e5ff;
+    --menu-secondary: #0d47a1;
+}
+.theme-obsidian-night .menu-container {
+    border: 2px solid var(--menu-gold);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+    padding: 8mm;
+    height: 100%;
+}
+.theme-obsidian-night .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-obsidian-night .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-obsidian-night .menu-category-title-container {
+    border-bottom: 1px solid var(--menu-gold);
+}
+.theme-obsidian-night .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+.theme-obsidian-night .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-obsidian-night .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #12141a;
+}
+.theme-obsidian-night svg {
+    fill: var(--menu-gold);
+}
+
+/* 12. Alexandria Bistro: Rich Burgundy and papyrus script style */
+.theme-alexandria-bistro {
+    --menu-bg: #4a0d0d;
+    --menu-text: #f7ecd5;
+    --menu-gold: #ffd700;
+    --menu-secondary: #ffd700;
+}
+.theme-alexandria-bistro .menu-container {
+    border: 3px double var(--menu-gold);
+    padding: 8mm;
+    height: 100%;
+}
+.theme-alexandria-bistro .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-alexandria-bistro .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+}
+.theme-alexandria-bistro .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-alexandria-bistro .menu-item-name {
+    font-family: 'Cinzel', serif;
+}
+.theme-alexandria-bistro .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-alexandria-bistro .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #4a0d0d;
+}
+.theme-alexandria-bistro svg {
+    fill: var(--menu-gold);
+}
+
+/* 13. Sacred Scarab: Deep violet-black paper with glowing gold-bronze double-line framing */
+.theme-sacred-scarab {
+    --menu-bg: #191528;
+    --menu-text: #f0eaf8;
+    --menu-gold: #cba154;
+    --menu-secondary: #4a3e75;
+}
+.theme-sacred-scarab .menu-container {
+    border: 1px solid var(--menu-gold);
+    outline: 2px solid var(--menu-gold);
+    outline-offset: -8px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-sacred-scarab .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+    letter-spacing: 2px;
+}
+.theme-sacred-scarab .menu-category-title {
+    font-family: 'Spectral', serif;
+    color: var(--menu-gold);
+    border-bottom: 1px dashed var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-sacred-scarab .menu-item-name {
+    font-family: 'Spectral', serif;
+    font-weight: 600;
+}
+.theme-sacred-scarab .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-sacred-scarab .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+    border: 1px solid var(--menu-gold);
+}
+.theme-sacred-scarab svg {
+    fill: var(--menu-gold);
+}
+
+/* 14. Karnak Pillar: Warm terracotta sandstone paper base with vertical side pillars/columns */
+.theme-karnak-pillar {
+    --menu-bg: #e3a87c;
+    --menu-text: #2e1f16;
+    --menu-gold: #8b5329;
+    --menu-secondary: #3d2f25;
+}
+.theme-karnak-pillar .menu-container {
+    border-left: 12px double var(--menu-secondary);
+    border-right: 12px double var(--menu-secondary);
+    border-top: 2px solid var(--menu-secondary);
+    border-bottom: 2px solid var(--menu-secondary);
+    padding: 8mm 6mm;
+    height: 100%;
+}
+.theme-karnak-pillar .menu-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 1px;
+}
+.theme-karnak-pillar .menu-category-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--menu-secondary);
+    text-align: center;
+}
+.theme-karnak-pillar .menu-category-title-container {
+    justify-content: center;
+    border-bottom: 2px solid var(--menu-secondary);
+    padding-bottom: 4px;
+}
+.theme-karnak-pillar .menu-item-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+}
+.theme-karnak-pillar .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-karnak-pillar .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-karnak-pillar svg {
+    fill: var(--menu-secondary);
+}
+
+/* 15. Queen Cleopatra: Imperial royal purple and delicate double rose-gold lines */
+.theme-queen-cleopatra {
+    --menu-bg: #34143a;
+    --menu-text: #fdf5fc;
+    --menu-gold: #e0a6b5;
+    --menu-secondary: #ffd700;
+}
+.theme-queen-cleopatra .menu-container {
+    border: 2px solid var(--menu-gold);
+    outline: 1px solid var(--menu-gold);
+    outline-offset: 4px;
+    border-radius: 4px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-queen-cleopatra .menu-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+.theme-queen-cleopatra .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-gold);
+    font-style: italic;
+}
+.theme-queen-cleopatra .menu-category-title-container {
+    border-bottom: 1px solid rgba(224, 166, 181, 0.4);
+    padding-bottom: 2px;
+}
+.theme-queen-cleopatra .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-queen-cleopatra .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-queen-cleopatra .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #34143a;
+}
+.theme-queen-cleopatra svg {
+    fill: var(--menu-gold);
+}
+
+/* 16. Valley of Kings: Matte granite charcoal paper with vibrant sunburst yellow elements */
+.theme-valley-kings {
+    --menu-bg: #1c1e22;
+    --menu-text: #e2e8f0;
+    --menu-gold: #ffd200;
+    --menu-secondary: #f39c12;
+}
+.theme-valley-kings .menu-container {
+    border: 4px solid var(--menu-gold);
+    clip-path: polygon(0% 15px, 15px 0%, calc(100% - 15px) 0%, 100% 15px, 100% calc(100% - 15px), calc(100% - 15px) 100%, 15px 100%, 0% calc(100% - 15px));
+    padding: 10mm;
+    height: 100%;
+    background-color: var(--menu-bg);
+}
+.theme-valley-kings .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-valley-kings .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-valley-kings .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.theme-valley-kings .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-valley-kings .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #1c1e22;
+}
+.theme-valley-kings svg {
+    fill: var(--menu-gold);
+}
+
+/* 17. Horus Falcon: Sleek slate granite paper with sharp clean geometric brass trims */
+.theme-horus-falcon {
+    --menu-bg: #272e38;
+    --menu-text: #eceff1;
+    --menu-gold: #d1a153;
+    --menu-secondary: #1a202c;
+}
+.theme-horus-falcon .menu-container {
+    border: 1px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+    position: relative;
+}
+.theme-horus-falcon .menu-container::before {
+    content: '';
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 2px solid var(--menu-gold);
+    opacity: 0.3;
+    pointer-events: none;
+}
+.theme-horus-falcon .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+    letter-spacing: 4px;
+}
+.theme-horus-falcon .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-horus-falcon .menu-category-title-container {
+    border-bottom: 1px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-horus-falcon .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+.theme-horus-falcon .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-horus-falcon .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+    border: 1px solid var(--menu-gold);
+}
+.theme-horus-falcon svg {
+    fill: var(--menu-gold);
+}
+
+/* 18. Sacred Lotus: Soft organic sage linen texture with warm copper borders */
+.theme-sacred-lotus {
+    --menu-bg: #e2ece7;
+    --menu-text: #2f433c;
+    --menu-gold: #8c5a3c;
+    --menu-secondary: #4a665b;
+}
+.theme-sacred-lotus .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 30px 30px 0 0;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-sacred-lotus .menu-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 2px;
+}
+.theme-sacred-lotus .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-secondary);
+    font-weight: 700;
+}
+.theme-sacred-lotus .menu-category-title-container {
+    justify-content: center;
+    border-bottom: 1px solid var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-sacred-lotus .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-sacred-lotus .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-sacred-lotus .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-sacred-lotus svg {
+    fill: var(--menu-secondary);
+}
+
+/* 19. Isis Blessing: Celestial sand beige layout with warm glowing sunset copper */
+.theme-isis-blessing {
+    --menu-bg: #faf3e0;
+    --menu-text: #3c322b;
+    --menu-gold: #d46a43;
+    --menu-secondary: #8c5035;
+}
+.theme-isis-blessing .menu-container {
+    border: 1px solid var(--menu-gold);
+    border-radius: 8px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-isis-blessing .menu-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 3px;
+}
+.theme-isis-blessing .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-secondary);
+}
+.theme-isis-blessing .menu-category-title-container {
+    border-bottom: 1px solid rgba(212, 106, 67, 0.4);
+    padding-bottom: 4px;
+}
+.theme-isis-blessing .menu-item-name {
+    font-family: 'Spectral', serif;
+    font-weight: 600;
+}
+.theme-isis-blessing .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-isis-blessing .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #fff;
+}
+.theme-isis-blessing svg {
+    fill: var(--menu-gold);
+}
+
+/* 20. Anubis Guard: Deep dramatic black matte paper with terracotta red-orange details */
+.theme-anubis-guard {
+    --menu-bg: #0d0d0d;
+    --menu-text: #eaeaea;
+    --menu-gold: #e05a36;
+    --menu-secondary: #2c2c2c;
+}
+.theme-anubis-guard .menu-container {
+    border: 3px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-anubis-guard .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-anubis-guard .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+    text-align: center;
+}
+.theme-anubis-guard .menu-category-title-container {
+    justify-content: center;
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-anubis-guard .menu-item-name {
+    font-family: 'Marcellus', sans-serif;
+}
+.theme-anubis-guard .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-anubis-guard .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #0d0d0d;
+}
+.theme-anubis-guard svg {
+    fill: var(--menu-gold);
+}
+
+/* 21. Sphinx Monolith: Textured limestone grey paper with heavy carved slate margins */
+.theme-sphinx-monolith {
+    --menu-bg: #cfd8dc;
+    --menu-text: #263238;
+    --menu-gold: #546e7a;
+    --menu-secondary: #37474f;
+}
+.theme-sphinx-monolith .menu-container {
+    border: 6px solid var(--menu-secondary);
+    padding: 8mm;
+    height: 100%;
+}
+.theme-sphinx-monolith .menu-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--menu-secondary);
+    text-shadow: 1px 1px 1px #fff;
+}
+.theme-sphinx-monolith .menu-category-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--menu-secondary);
+}
+.theme-sphinx-monolith .menu-category-title-container {
+    border-bottom: 3px solid var(--menu-secondary);
+    padding-bottom: 2px;
+}
+.theme-sphinx-monolith .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.theme-sphinx-monolith .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-sphinx-monolith .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-sphinx-monolith svg {
+    fill: var(--menu-secondary);
+}
+
+/* 22. Avaris Oasis: Rich vibrant palm green, white linen text, and polished gold accents */
+.theme-avaris-oasis {
+    --menu-bg: #093c2c;
+    --menu-text: #ffffff;
+    --menu-gold: #ffd700;
+    --menu-secondary: #105943;
+}
+.theme-avaris-oasis .menu-container {
+    border: 1px solid var(--menu-gold);
+    outline: 3px double var(--menu-gold);
+    outline-offset: 4px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-avaris-oasis .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-avaris-oasis .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-avaris-oasis .menu-category-title-container {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.4);
+    padding-bottom: 4px;
+}
+.theme-avaris-oasis .menu-item-name {
+    font-family: 'Marcellus', sans-serif;
+}
+.theme-avaris-oasis .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-avaris-oasis .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #093c2c;
+}
+.theme-avaris-oasis svg {
+    fill: var(--menu-gold);
+}
+
+/* 23. Ramses Eternal: Imperial crimson red background and heavy radiant yellow-gold borders */
+.theme-ramses-eternal {
+    --menu-bg: #6e1620;
+    --menu-text: #fff6e5;
+    --menu-gold: #ffcf40;
+    --menu-secondary: #8a1f2b;
+}
+.theme-ramses-eternal .menu-container {
+    border: 4px solid var(--menu-gold);
+    border-radius: 8px;
+    padding: 8mm;
+    height: 100%;
+    position: relative;
+}
+.theme-ramses-eternal .menu-container::after {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border: 1px solid var(--menu-gold);
+    pointer-events: none;
+}
+.theme-ramses-eternal .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+    text-shadow: 0 0 8px rgba(255, 207, 64, 0.4);
+}
+.theme-ramses-eternal .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+}
+.theme-ramses-eternal .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-ramses-eternal .menu-item-name {
+    font-family: 'Cinzel', serif;
+}
+.theme-ramses-eternal .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-ramses-eternal .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #6e1620;
+}
+.theme-ramses-eternal svg {
+    fill: var(--menu-gold);
+}
+
+/* 24. Osiris Rebirth: Midnight teal background and desert copper sand fonts */
+.theme-osiris-rebirth {
+    --menu-bg: #072a31;
+    --menu-text: #ffffff;
+    --menu-gold: #d4a373;
+    --menu-secondary: #0d3f4a;
+}
+.theme-osiris-rebirth .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 12px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-osiris-rebirth .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-osiris-rebirth .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-gold);
+    font-weight: 700;
+}
+.theme-osiris-rebirth .menu-category-title-container {
+    border-bottom: 1px solid rgba(212, 163, 115, 0.4);
+    padding-bottom: 4px;
+}
+.theme-osiris-rebirth .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-osiris-rebirth .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-osiris-rebirth .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+    border: 1px solid var(--menu-gold);
+}
+.theme-osiris-rebirth svg {
+    fill: var(--menu-gold);
+}
+
+/* 25. Gilded Pharaoh: Brilliant gold paper and royal navy accents */
+.theme-gilded-pharaoh {
+    --menu-bg: #f4d068;
+    --menu-text: #0f2347;
+    --menu-gold: #0f2347;
+    --menu-secondary: #0f2347;
+}
+.theme-gilded-pharaoh .menu-container {
+    border: 8px double var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-gilded-pharaoh .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-gilded-pharaoh .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+}
+.theme-gilded-pharaoh .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-gilded-pharaoh .menu-item-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+}
+.theme-gilded-pharaoh .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-gilded-pharaoh .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #f4d068;
+}
+.theme-gilded-pharaoh svg {
+    fill: var(--menu-gold);
+}
+
+/* 26. Bastet Cat: Warm cream and elegant sleek bronze mauve */
+.theme-bastet-cat {
+    --menu-bg: #fdfbf7;
+    --menu-text: #2f252e;
+    --menu-gold: #7851a9;
+    --menu-secondary: #4e354a;
+}
+.theme-bastet-cat .menu-container {
+    border: 1px solid var(--menu-secondary);
+    outline: 1px solid var(--menu-secondary);
+    outline-offset: 4px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-bastet-cat .menu-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 2px;
+}
+.theme-bastet-cat .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-secondary);
+    font-style: italic;
+}
+.theme-bastet-cat .menu-category-title-container {
+    border-bottom: 1px solid rgba(78, 53, 74, 0.3);
+    padding-bottom: 2px;
+}
+.theme-bastet-cat .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-bastet-cat .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-bastet-cat .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-bastet-cat svg {
+    fill: var(--menu-secondary);
+}
+
+/* 27. Sobek River: Deep crocodile green and dark brass */
+.theme-sobek-river {
+    --menu-bg: #132e27;
+    --menu-text: #ebf5f1;
+    --menu-gold: #bda55d;
+    --menu-secondary: #0d211c;
+}
+.theme-sobek-river .menu-container {
+    border: 3px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-sobek-river .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+    letter-spacing: 3px;
+}
+.theme-sobek-river .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-sobek-river .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-sobek-river .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.theme-sobek-river .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-sobek-river .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #132e27;
+}
+.theme-sobek-river svg {
+    fill: var(--menu-gold);
+}
+
+/* 28. Heliopolis Sun: Vibrant sun peach-to-orange gradient and gold line */
+.theme-heliopolis-sun {
+    --menu-bg: linear-gradient(135deg, #fff0db, #ffe0b2);
+    --menu-text: #3e2723;
+    --menu-gold: #d48f21;
+    --menu-secondary: #5d4037;
+}
+.theme-heliopolis-sun .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 12px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-heliopolis-sun .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+}
+.theme-heliopolis-sun .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-secondary);
+}
+.theme-heliopolis-sun .menu-category-title-container {
+    justify-content: center;
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 2px;
+}
+.theme-heliopolis-sun .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.theme-heliopolis-sun .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-heliopolis-sun .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #fff;
+}
+.theme-heliopolis-sun svg {
+    fill: var(--menu-gold);
+}
+
+/* 29. Ptah Architect: Dark slate and silver architectural lines */
+.theme-ptah-architect {
+    --menu-bg: #2c3e50;
+    --menu-text: #ecf0f1;
+    --menu-gold: #bdc3c7;
+    --menu-secondary: #34495e;
+}
+.theme-ptah-architect .menu-container {
+    border: 1px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-ptah-architect .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: #fff;
+    letter-spacing: 5px;
+}
+.theme-ptah-architect .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-ptah-architect .menu-category-title-container {
+    border-bottom: 1px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-ptah-architect .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+.theme-ptah-architect .menu-item-price {
+    color: #fff;
+}
+.theme-ptah-architect .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #2c3e50;
+}
+.theme-ptah-architect svg {
+    fill: var(--menu-gold);
+}
+
+/* 30. Hathor Love: Blush rose-cream and golden accents */
+.theme-hathor-love {
+    --menu-bg: #fbf1ee;
+    --menu-text: #4a2c2a;
+    --menu-gold: #d4af37;
+    --menu-secondary: #7d504c;
+}
+.theme-hathor-love .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 20px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-hathor-love .menu-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--menu-secondary);
+}
+.theme-hathor-love .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-secondary);
+    font-weight: 700;
+}
+.theme-hathor-love .menu-category-title-container {
+    border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+    padding-bottom: 2px;
+}
+.theme-hathor-love .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-hathor-love .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-hathor-love .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-hathor-love svg {
+    fill: var(--menu-secondary);
+}
+
+/* 31. Khnum Clay: Pottery terracotta clay and cream */
+.theme-khnum-clay {
+    --menu-bg: #a0522d;
+    --menu-text: #faf0e6;
+    --menu-gold: #e2a87c;
+    --menu-secondary: #5e2f18;
+}
+.theme-khnum-clay .menu-container {
+    border: 2px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-khnum-clay .menu-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--menu-gold);
+}
+.theme-khnum-clay .menu-category-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--menu-gold);
+}
+.theme-khnum-clay .menu-category-title-container {
+    border-bottom: 1px dashed var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-khnum-clay .menu-item-name {
+    font-family: 'Spectral', serif;
+    font-weight: 600;
+}
+.theme-khnum-clay .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-khnum-clay .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #faf0e6;
+}
+.theme-khnum-clay svg {
+    fill: var(--menu-gold);
+}
+
+/* 32. Thoth Wisdom: Ancient library ivory and dark slate */
+.theme-thoth-wisdom {
+    --menu-bg: #faf6eb;
+    --menu-text: #2b353b;
+    --menu-gold: #566975;
+    --menu-secondary: #1f272c;
+}
+.theme-thoth-wisdom .menu-container {
+    border: 1px solid var(--menu-secondary);
+    outline: 3px solid var(--menu-secondary);
+    outline-offset: -6px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-thoth-wisdom .menu-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 2px;
+}
+.theme-thoth-wisdom .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-secondary);
+    font-weight: 700;
+}
+.theme-thoth-wisdom .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-secondary);
+    padding-bottom: 2px;
+}
+.theme-thoth-wisdom .menu-item-name {
+    font-family: 'Spectral', serif;
+    font-weight: 600;
+}
+.theme-thoth-wisdom .menu-item-price {
+    color: var(--menu-secondary);
+}
+.theme-thoth-wisdom .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-thoth-wisdom svg {
+    fill: var(--menu-secondary);
+}
+
+/* 33. Sekhmet Fire: Fierce burgundy and burning gold */
+.theme-sekhmet-fire {
+    --menu-bg: #2b0d0d;
+    --menu-text: #fdebd0;
+    --menu-gold: #f39c12;
+    --menu-secondary: #e74c3c;
+}
+.theme-sekhmet-fire .menu-container {
+    border: 3px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-sekhmet-fire .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-gold);
+}
+.theme-sekhmet-fire .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-sekhmet-fire .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-gold);
+    padding-bottom: 4px;
+}
+.theme-sekhmet-fire .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.theme-sekhmet-fire .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-sekhmet-fire .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-sekhmet-fire svg {
+    fill: var(--menu-gold);
+}
+
+/* 34. Memphis Classic: High-contrast cream and black-gold frames */
+.theme-memphis-classic {
+    --menu-bg: #fdfaf2;
+    --menu-text: #1a1a1a;
+    --menu-gold: #d4af37;
+    --menu-secondary: #000000;
+}
+.theme-memphis-classic .menu-container {
+    border: 4px solid var(--menu-secondary);
+    outline: 2px solid var(--menu-gold);
+    outline-offset: -6px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-memphis-classic .menu-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--menu-secondary);
+    letter-spacing: 4px;
+}
+.theme-memphis-classic .menu-category-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-secondary);
+    font-weight: 800;
+}
+.theme-memphis-classic .menu-category-title-container {
+    border-bottom: 2px solid var(--menu-secondary);
+    padding-bottom: 2px;
+}
+.theme-memphis-classic .menu-item-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+}
+.theme-memphis-classic .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-memphis-classic .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+}
+.theme-memphis-classic svg {
+    fill: var(--menu-secondary);
+}
+
+/* 35. Amun Shadow: Shadow grey and solid bronze-gold */
+.theme-amun-shadow {
+    --menu-bg: #1e2022;
+    --menu-text: #e2e5e7;
+    --menu-gold: #bfa15f;
+    --menu-secondary: #0f1011;
+}
+.theme-amun-shadow .menu-container {
+    border: 1px solid var(--menu-gold);
+    padding: 10mm;
+    height: 100%;
+}
+.theme-amun-shadow .menu-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+    letter-spacing: 3px;
+}
+.theme-amun-shadow .menu-category-title {
+    font-family: 'Marcellus', sans-serif;
+    color: var(--menu-gold);
+}
+.theme-amun-shadow .menu-category-title-container {
+    border-bottom: 1px solid rgba(191, 161, 95, 0.4);
+    padding-bottom: 4px;
+}
+.theme-amun-shadow .menu-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+.theme-amun-shadow .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-amun-shadow .menu-item-badge {
+    background-color: var(--menu-gold);
+    color: #1e2022;
+}
+.theme-amun-shadow svg {
+    fill: var(--menu-gold);
+}
+
+/* 36. Nile Delta: Nile teal and glowing sand-gold */
+.theme-nile-delta {
+    --menu-bg: #224446;
+    --menu-text: #ffffff;
+    --menu-gold: #e5c060;
+    --menu-secondary: #173031;
+}
+.theme-nile-delta .menu-container {
+    border: 2px solid var(--menu-gold);
+    border-radius: 8px;
+    padding: 10mm;
+    height: 100%;
+}
+.theme-nile-delta .menu-title {
+    font-family: 'Cinzel', serif;
+    color: var(--menu-gold);
+    letter-spacing: 2px;
+}
+.theme-nile-delta .menu-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--menu-gold);
+    font-weight: 700;
+}
+.theme-nile-delta .menu-category-title-container {
+    border-bottom: 1px solid rgba(229, 192, 96, 0.4);
+    padding-bottom: 4px;
+}
+.theme-nile-delta .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+}
+.theme-nile-delta .menu-item-price {
+    color: var(--menu-gold);
+}
+.theme-nile-delta .menu-item-badge {
+    background-color: var(--menu-secondary);
+    color: #fff;
+    border: 1px solid var(--menu-gold);
+}
+.theme-nile-delta svg {
+    fill: var(--menu-gold);
+}
+
+/* ==========================================================================
+   Custom Watermark, Dividers & Variants Styling
+   ========================================================================== */
+.menu-bg-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(var(--menu-watermark-scale));
+    opacity: var(--menu-watermark-opacity);
+    width: 320px;
+    height: 320px;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.menu-bg-watermark svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--menu-gold) !important;
+    stroke: none;
+}
+
+/* Custom Divider Style Overrides */
+.divider-style-solid .menu-header-divider,
+.divider-style-solid .menu-category-title-container {
+    border-bottom: 1px solid var(--menu-gold) !important;
+    height: 1px;
+}
+.divider-style-double .menu-header-divider,
+.divider-style-double .menu-category-title-container {
+    border-bottom: 3px double var(--menu-gold) !important;
+    height: 3px;
+}
+.divider-style-dotted .menu-header-divider,
+.divider-style-dotted .menu-category-title-container {
+    border-bottom: 2px dotted var(--menu-gold) !important;
+    height: 2px;
+}
+.divider-style-none .menu-header-divider,
+.divider-style-none .menu-category-title-container {
+    border-bottom: none !important;
+    height: 0;
+}
+.divider-style-lotus .menu-header-divider,
+.divider-style-lotus .menu-category-title-container {
+    border-bottom: 1px solid var(--menu-gold) !important;
+    position: relative;
+}
+.divider-style-lotus .menu-header-divider::after,
+.divider-style-lotus .menu-category-title-container::after {
+    content: '𓆸';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--menu-bg) !important;
+    color: var(--menu-gold) !important;
+    padding: 0 8px;
+    font-size: 14px;
+    line-height: 1;
+    z-index: 2;
+}
+
+/* Multi-price layout styling */
+.price-variants-container {
+    display: flex;
+    gap: 8px;
+    font-size: calc(13px * var(--menu-font-scale) * (var(--menu-size-item-multiplier) / 100));
+}
+.price-variant {
+    font-weight: 700;
+    white-space: nowrap;
+}
+.price-variant-label {
+    font-size: 65%;
+    font-weight: 600;
+    opacity: 0.8;
+    margin-right: 2px;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   PRINT STYLES - Hides the entire editor dashboard and prints full-bleed A4
+   ========================================================================== */
+@media print {
+    /* Hide editor UI and backgrounds */
+    #dashboardShell, .sidebar, .sidebar-actions, .preview-viewport {
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        overflow: visible !important;
+        height: auto !important;
+        width: auto !important;
+    }
+
+    .dashboard-container {
+        display: block !important;
+        height: auto !important;
+        width: auto !important;
+    }
+
+    .preview-viewport {
+        display: block !important;
+        overflow: visible !important;
+        position: static !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .page-scaler-container {
+        transform: none !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+    }
+
+    .menu-paper-page {
+        box-shadow: none !important;
+        margin: 0 0 20mm 0 !important;
+        border: none !important;
+        transform: none !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .menu-paper-page.portrait {
+        width: 210mm !important;
+        height: 297mm !important;
+        padding: 10mm !important;
+    }
+
+    .menu-paper-page.landscape {
+        width: 297mm !important;
+        height: 210mm !important;
+        padding: 10mm !important;
+    }
+
+    /* Force high-quality color rendering in browsers */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
