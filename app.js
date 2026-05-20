@@ -66,7 +66,15 @@ const MENU_TEMPLATES = [
     { id: 'sekhmet-fire', name: 'Sekhmet Fire', class: 'theme-sekhmet-fire', thumb: 'thumb-sekhmet-fire', desc: 'Fierce burgundy & burning gold' },
     { id: 'memphis-classic', name: 'Memphis Classic', class: 'theme-memphis-classic', thumb: 'thumb-memphis-classic', desc: 'High-contrast cream & black-gold frames' },
     { id: 'amun-shadow', name: 'Amun Shadow', class: 'theme-amun-shadow', thumb: 'thumb-amun-shadow', desc: 'Shadow grey & solid bronze-gold' },
-    { id: 'nile-delta', name: 'Nile Delta', class: 'theme-nile-delta', thumb: 'thumb-nile-delta', desc: 'Nile teal & glowing sand-gold' }
+    { id: 'nile-delta', name: 'Nile Delta', class: 'theme-nile-delta', thumb: 'thumb-nile-delta', desc: 'Nile teal & glowing sand-gold' },
+    
+    // 6 New Premium Themes (37-42)
+    { id: 'alexandrian-emerald', name: 'Alexandrian Emerald', class: 'theme-alexandrian-emerald', thumb: 'thumb-alexandrian-emerald', desc: 'Emerald velvet & white gold borders' },
+    { id: 'luxor-sunset', name: 'Luxor Sunset', class: 'theme-luxor-sunset', thumb: 'thumb-luxor-sunset', desc: 'Warm ochre & violet shadows' },
+    { id: 'giza-monochrome', name: 'Giza Monochrome', class: 'theme-giza-monochrome', thumb: 'thumb-giza-monochrome', desc: 'Charcoal slate texture & marble cream' },
+    { id: 'memnon-bronze', name: 'Memnon Bronze', class: 'theme-memnon-bronze', thumb: 'thumb-memnon-bronze', desc: 'Bronze metal plate effect & dark obsidian' },
+    { id: 'sinai-turquoise', name: 'Sinai Turquoise', class: 'theme-sinai-turquoise', thumb: 'thumb-sinai-turquoise', desc: 'Turquoise stone veins texture & gold dust' },
+    { id: 'red-sea-coral', name: 'Red Sea Coral', class: 'theme-red-sea-coral', thumb: 'thumb-red-sea-coral', desc: 'Deep terracotta/coral & soft rose gold' }
 ];
 
 // --- Default Pharaonic Demo Menu Items ---
@@ -88,6 +96,14 @@ const DEFAULT_MENU_DATA = {
     colorGold: null,
     colorSecondary: null,
     
+    showCoverPage: false,
+    coverEmblem: 'ankh',
+    coverSubtitle: 'ESTABLISHED 2026',
+    showQr: false,
+    qrText: 'https://github.com/oss',
+    qrPosition: 'footer',
+    uploadedLogoDataUrl: null,
+    
     pages: [
         { id: 'page-1', title: 'Page 1' },
         { id: 'page-2', title: 'Page 2' }
@@ -102,7 +118,8 @@ const DEFAULT_MENU_DATA = {
         descSize: 100,
         watermarkOpacity: 15,
         watermarkScale: 50,
-        dividerStyle: 'solid'
+        dividerStyle: 'solid',
+        borderStyle: 'none'
     },
     
     categories: [
@@ -321,6 +338,26 @@ function selectLogo(logoKey) {
     renderLogoSelector();
 }
 
+function handleLogoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            appState.uploadedLogoDataUrl = e.target.result;
+            saveState();
+            document.getElementById('clearLogoBtn').style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function clearCustomLogo() {
+    appState.uploadedLogoDataUrl = null;
+    document.getElementById('customLogoUpload').value = '';
+    document.getElementById('clearLogoBtn').style.display = 'none';
+    saveState();
+}
+
 // --- Bind Inputs ---
 function bindSettingsControls() {
     // Cafe Name
@@ -426,6 +463,20 @@ function bindSettingsControls() {
         saveState();
     };
     
+    // Cover Page Controls
+    document.getElementById('showCoverPage').checked = appState.showCoverPage;
+    document.getElementById('coverEmblem').value = appState.coverEmblem;
+    document.getElementById('coverSubtitle').value = appState.coverSubtitle;
+
+    // QR Code Controls
+    document.getElementById('showQr').checked = appState.showQr;
+    document.getElementById('qrText').value = appState.qrText;
+    document.getElementById('qrPosition').value = appState.qrPosition;
+
+    if (appState.uploadedLogoDataUrl) {
+        document.getElementById('clearLogoBtn').style.display = 'inline-block';
+    }
+
     syncTypographyInputs();
     syncColorPickerUI();
 }
@@ -446,6 +497,9 @@ function syncTypographyInputs() {
     document.getElementById('watermarkOpacity').value = cs.watermarkOpacity;
     document.getElementById('watermarkScale').value = cs.watermarkScale;
     document.getElementById('dividerStyle').value = cs.dividerStyle;
+    if (document.getElementById('borderStyle')) {
+        document.getElementById('borderStyle').value = cs.borderStyle || 'none';
+    }
     
     document.getElementById('titleSizeScaleVal').textContent = `${cs.titleSize}%`;
     document.getElementById('categorySizeScaleVal').textContent = `${cs.categorySize}%`;
@@ -465,6 +519,7 @@ window.updateCustomStyles = function() {
     const watermarkOpacity = parseInt(document.getElementById('watermarkOpacity').value);
     const watermarkScale = parseInt(document.getElementById('watermarkScale').value);
     const dividerStyle = document.getElementById('dividerStyle').value;
+    const borderStyle = document.getElementById('borderStyle') ? document.getElementById('borderStyle').value : 'none';
     
     appState.customStyle = {
         headerFont,
@@ -475,12 +530,37 @@ window.updateCustomStyles = function() {
         descSize,
         watermarkOpacity,
         watermarkScale,
-        dividerStyle
+        dividerStyle,
+        borderStyle
     };
     
     document.getElementById('titleSizeScaleVal').textContent = `${titleSize}%`;
     document.getElementById('categorySizeScaleVal').textContent = `${categorySize}%`;
     document.getElementById('itemSizeScaleVal').textContent = `${itemSize}%`;
+
+window.toggleCoverPageSetting = function(checked) {
+    appState.showCoverPage = checked;
+    saveState();
+    renderPreview();
+};
+
+window.updateCoverPageSetting = function(key, val) {
+    appState[key] = val;
+    saveState();
+    renderPreview();
+};
+
+window.toggleQrSetting = function(checked) {
+    appState.showQr = checked;
+    saveState();
+    renderPreview();
+};
+
+window.updateQrSetting = function(key, val) {
+    appState[key] = val;
+    saveState();
+    renderPreview();
+};
     document.getElementById('descSizeScaleVal').textContent = `${descSize}%`;
     document.getElementById('watermarkOpacityVal').textContent = `${watermarkOpacity}%`;
     document.getElementById('watermarkScaleVal').textContent = `${watermarkScale}%`;
@@ -598,9 +678,20 @@ function renderPageManager() {
 
 window.changeCategoryPage = function(catId, pageId) {
     const cat = appState.categories.find(c => c.id === catId);
-    if (!cat) return;
-    cat.pageId = pageId;
-    saveState();
+    if (cat) {
+        cat.pageId = pageId;
+        saveState();
+        renderPreview();
+    }
+};
+
+window.changeCategoryLayout = function(catId, layoutStr) {
+    const cat = appState.categories.find(c => c.id === catId);
+    if (cat) {
+        cat.layoutColumns = parseInt(layoutStr, 10);
+        saveState();
+        renderPreview();
+    }
 };
 
 // --- Render Content Manager Accordion ---
@@ -629,10 +720,19 @@ function renderContentAccordion() {
             
             <div class="accordion-content">
                 <div class="control-group" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,255,255,0.02); padding: 8px 10px; border-radius: 4px; border: 1px solid var(--dash-border);">
-                    <label style="font-size: 11px; margin-bottom: 0; color: var(--dash-text-muted);">Assigned to Page:</label>
-                    <select style="font-size: 11px; padding: 4px 8px; width: auto; background: #161a25; color: #fff; border: 1px solid var(--dash-border); border-radius: 4px;" onchange="changeCategoryPage('${cat.id}', this.value)">
-                        ${appState.pages.map(p => `<option value="${p.id}" ${cat.pageId === p.id ? 'selected' : ''}>${p.title}</option>`).join('')}
-                    </select>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label style="font-size: 11px; margin-bottom: 0; color: var(--dash-text-muted);">Page:</label>
+                        <select style="font-size: 11px; padding: 4px; background: #161a25; color: #fff; border: 1px solid var(--dash-border); border-radius: 4px;" onchange="changeCategoryPage('${cat.id}', this.value)">
+                            ${appState.pages.map(p => `<option value="${p.id}" ${cat.pageId === p.id ? 'selected' : ''}>${p.title}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label style="font-size: 11px; margin-bottom: 0; color: var(--dash-text-muted);">Layout:</label>
+                        <select style="font-size: 11px; padding: 4px; background: #161a25; color: #fff; border: 1px solid var(--dash-border); border-radius: 4px;" onchange="changeCategoryLayout('${cat.id}', this.value)">
+                            <option value="1" ${cat.layoutColumns === 2 ? '' : 'selected'}>1 Column</option>
+                            <option value="2" ${cat.layoutColumns === 2 ? 'selected' : ''}>2 Columns</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="item-editor-list" id="item-list-container-${cat.id}">
                     <!-- Menu items inside this category will be rendered here -->
@@ -970,11 +1070,22 @@ function renderPreview() {
         if (appState.colorGold) pageNode.style.setProperty('--menu-gold', appState.colorGold);
         if (appState.colorSecondary) pageNode.style.setProperty('--menu-secondary', appState.colorSecondary);
         
+        // Page borders
+        if (appState.customStyle.borderStyle && appState.customStyle.borderStyle !== 'none') {
+            pageNode.classList.add(`border-style-${appState.customStyle.borderStyle}`);
+        }
+
         // Build page content HTML
         let pageHtml = '';
         
         // Watermark background
-        if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
+        if (appState.uploadedLogoDataUrl) {
+            pageHtml += `
+                <div class="menu-bg-watermark" style="opacity: var(--menu-watermark-opacity); transform: scale(var(--menu-watermark-scale));">
+                    <img src="${appState.uploadedLogoDataUrl}" style="max-width:100%; opacity:0.1; filter: grayscale(100%);">
+                </div>
+            `;
+        } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
             pageHtml += `
                 <div class="menu-bg-watermark">
                     ${LOGO_ICONS[appState.logoIcon]}
@@ -986,22 +1097,61 @@ function renderPreview() {
         
         // Header only on first page
         if (pageIdx === 0) {
-            pageHtml += `
-                <header class="menu-header">
-            `;
-            if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
+            if (appState.showCoverPage) {
+                // Render Cover Page
                 pageHtml += `
-                    <div class="menu-logo-container">
-                        ${LOGO_ICONS[appState.logoIcon]}
+                    <div class="cover-page-layout">
+                        <div class="cover-page-content">
+                `;
+                if (appState.uploadedLogoDataUrl) {
+                    pageHtml += `
+                        <div class="cover-logo">
+                            <img src="${appState.uploadedLogoDataUrl}" style="max-width: 120px; height: auto;">
+                        </div>
+                    `;
+                } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
+                    pageHtml += `
+                        <div class="cover-logo">
+                            ${LOGO_ICONS[appState.logoIcon]}
+                        </div>
+                    `;
+                }
+                
+                pageHtml += `
+                            <h1 class="cover-title">${escapeHtml(appState.cafeName)}</h1>
+                            <p class="cover-subtitle">${escapeHtml(appState.coverSubtitle || appState.cafeTagline)}</p>
+                `;
+                if (appState.coverEmblem) {
+                    pageHtml += `<div class="cover-emblem">${escapeHtml(appState.coverEmblem)}</div>`;
+                }
+                pageHtml += `
+                        </div>
                     </div>
                 `;
+            } else {
+                pageHtml += `
+                    <header class="menu-header">
+                `;
+                if (appState.uploadedLogoDataUrl) {
+                    pageHtml += `
+                        <div class="menu-logo-container">
+                            <img src="${appState.uploadedLogoDataUrl}" style="max-width: 60px; height: auto;">
+                        </div>
+                    `;
+                } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
+                    pageHtml += `
+                        <div class="menu-logo-container">
+                            ${LOGO_ICONS[appState.logoIcon]}
+                        </div>
+                    `;
+                }
+                pageHtml += `
+                        <h1 class="menu-title">${escapeHtml(appState.cafeName)}</h1>
+                        <p class="menu-tagline">${escapeHtml(appState.cafeTagline)}</p>
+                        <div class="menu-header-divider"></div>
+                    </header>
+                `;
             }
-            pageHtml += `
-                    <h1 class="menu-title">${escapeHtml(appState.cafeName)}</h1>
-                    <p class="menu-tagline">${escapeHtml(appState.cafeTagline)}</p>
-                    <div class="menu-header-divider"></div>
-                </header>
-            `;
         } else {
             // Smaller page header indicator for Page 2, 3 etc.
             pageHtml += `
@@ -1032,12 +1182,17 @@ function renderPreview() {
             pageCategories.forEach(cat => {
                 if (cat.items.length === 0) return;
                 
+                let layoutClass = '';
+                if (cat.layoutColumns === 2) {
+                    layoutClass = ' layout-grid-2';
+                }
+
                 pageHtml += `
                     <section class="menu-category-node">
                         <div class="menu-category-title-container">
                             <h2 class="menu-category-title">${escapeHtml(cat.name)}</h2>
                         </div>
-                        <div class="menu-item-list">
+                        <div class="menu-item-list${layoutClass}">
                 `;
                 
                 cat.items.forEach(item => {
@@ -1092,6 +1247,36 @@ function renderPreview() {
                 <footer class="menu-footer" style="margin-top: auto; padding-top: 2mm; border-top: none; opacity: 0.6; font-size: 8px;">
                     <p>Page ${pageIdx + 1} of ${appState.pages.length}</p>
                 </footer>
+            `;
+        }
+        
+        // QR Code on last page
+        if (appState.showQr && pageIdx === appState.pages.length - 1) {
+            const qrPos = appState.qrPosition || 'bottom-right';
+            const qrText = escapeHtml(appState.qrText || 'Scan Me');
+            // Basic SVG QR placeholder
+            const qrSvg = `
+            <svg viewBox="0 0 100 100" width="100%" height="100%" fill="currentColor">
+                <rect width="100" height="100" fill="white" />
+                <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z" fill="black" />
+                <path d="M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="black" />
+                <path d="M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z" fill="black" />
+                <rect x="40" y="10" width="10" height="10" fill="black" />
+                <rect x="55" y="20" width="10" height="10" fill="black" />
+                <rect x="10" y="40" width="10" height="10" fill="black" />
+                <rect x="25" y="55" width="10" height="10" fill="black" />
+                <rect x="40" y="40" width="10" height="10" fill="black" />
+                <rect x="40" y="55" width="25" height="10" fill="black" />
+                <rect x="70" y="40" width="20" height="20" fill="black" />
+                <rect x="55" y="70" width="10" height="10" fill="black" />
+                <rect x="70" y="70" width="20" height="20" fill="black" />
+                <rect x="40" y="80" width="10" height="10" fill="black" />
+            </svg>`;
+            pageHtml += `
+                <div class="qr-container ${qrPos}">
+                    <div class="qr-image">${qrSvg}</div>
+                    ${qrText ? `<div class="qr-text">${qrText}</div>` : ''}
+                </div>
             `;
         }
         

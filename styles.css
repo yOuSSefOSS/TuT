@@ -2723,4 +2723,213 @@ body {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
+    }
+}
+
+/* ==========================================================================
+   ADVANCED PREMIUM FEATURES
+   ========================================================================== */
+
+/* 1. Category Layout Grid Styles */
+.menu-item-list.layout-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 30px;
+}
+.menu-item-list.layout-grid-2 .menu-item-node {
+    margin-bottom: 0;
+}
+
+/* 2. Page Borders */
+.menu-paper-page.border-style-classic-gold-frame::after {
+    content: '';
+    position: absolute;
+    top: 15px; left: 15px; right: 15px; bottom: 15px;
+    border: 2px solid var(--menu-gold, #d4af37);
+    outline: 1px solid var(--menu-gold, #d4af37);
+    outline-offset: -5px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.menu-paper-page.border-style-hieroglyph-band::after {
+    content: '';
+    position: absolute;
+    top: 20px; left: 15px; bottom: 20px;
+    width: 20px;
+    border-right: 1px solid var(--menu-gold, #d4af37);
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, var(--menu-gold, #d4af37) 10px, var(--menu-gold, #d4af37) 11px);
+    pointer-events: none;
+    z-index: 10;
+}
+.menu-paper-page.border-style-hieroglyph-band::before {
+    content: '';
+    position: absolute;
+    top: 20px; right: 15px; bottom: 20px;
+    width: 20px;
+    border-left: 1px solid var(--menu-gold, #d4af37);
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, var(--menu-gold, #d4af37) 10px, var(--menu-gold, #d4af37) 11px);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.menu-paper-page.border-style-cartouche-outline::after {
+    content: '';
+    position: absolute;
+    top: 20px; left: 20px; right: 20px; bottom: 20px;
+    border: 3px double var(--menu-gold, #d4af37);
+    border-radius: 40px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.menu-paper-page.border-style-minimalist-thin::after {
+    content: '';
+    position: absolute;
+    top: 15px; left: 15px; right: 15px; bottom: 15px;
+    border: 1px solid var(--menu-gold, #d4af37);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 3. Cover Page Styles */
+.menu-cover-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px !important;
+}
+
+.menu-cover-emblem {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 40px;
+    color: var(--menu-gold);
+}
+.menu-cover-emblem svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+}
+
+.menu-cover-title {
+    font-family: var(--menu-font-header, 'Cinzel Decorative', serif);
+    font-size: calc(6rem * var(--menu-font-scale));
+    color: var(--menu-gold);
+    margin-bottom: 10px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+.menu-cover-tagline {
+    font-family: var(--menu-font-body, 'Montserrat', sans-serif);
+    font-size: calc(1.8rem * var(--menu-font-scale));
+    color: var(--menu-text);
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    opacity: 0.8;
+}
+
+.menu-cover-subtitle {
+    font-family: var(--menu-font-body, 'Montserrat', sans-serif);
+    font-size: calc(1rem * var(--menu-font-scale));
+    color: var(--menu-gold);
+    margin-top: auto;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    border-top: 1px solid var(--menu-gold);
+    border-bottom: 1px solid var(--menu-gold);
+    padding: 10px 20px;
+}
+
+/* 4. QR Code Styles */
+.menu-qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    z-index: 5;
+}
+.menu-qr-container.header-qr {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+.menu-qr-container.footer-qr {
+    margin: 20px auto 0;
+}
+.menu-qr-code {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    padding: 4px;
+    border: 1px solid var(--menu-gold);
+    border-radius: 4px;
+}
+.menu-qr-code svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.menu-qr-text {
+    font-family: var(--menu-font-body, 'Montserrat', sans-serif);
+    font-size: 8px;
+    margin-top: 4px;
+    color: var(--menu-text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 5. Six New Themes (37-42) */
+.theme-alexandrian-emerald {
+    --menu-bg: #0b2219;
+    --menu-text: #e8f5e9;
+    --menu-gold: #c5a880;
+    --menu-secondary: #081711;
+    --menu-font-header: 'Marcellus', serif;
+}
+
+.theme-luxor-sunset {
+    --menu-bg: #d4a373;
+    --menu-text: #3c2a21;
+    --menu-gold: #824d27;
+    --menu-secondary: #faedcd;
+    --menu-font-header: 'Alexandria', sans-serif;
+}
+
+.theme-giza-monochrome {
+    --menu-bg: #1c1c1c;
+    --menu-text: #f0f0f0;
+    --menu-gold: #a6a6a6;
+    --menu-secondary: #2a2a2a;
+    background-image: radial-gradient(circle at center, #252525 0%, #101010 100%);
+}
+
+.theme-memnon-bronze {
+    --menu-bg: #4a3b32;
+    --menu-text: #1a1412;
+    --menu-gold: #a87b51;
+    --menu-secondary: #302620;
+    background: linear-gradient(135deg, #4a3b32 0%, #302620 100%);
+}
+
+.theme-sinai-turquoise {
+    --menu-bg: #1b8798;
+    --menu-text: #fdfdfd;
+    --menu-gold: #f2e2ba;
+    --menu-secondary: #125c68;
+}
+
+.theme-red-sea-coral {
+    --menu-bg: #c96459;
+    --menu-text: #451a15;
+    --menu-gold: #ffd6cc;
+    --menu-secondary: #a14d44;
+    --menu-font-header: 'Uncial Antiqua', serif;
 }

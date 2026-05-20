@@ -73,6 +73,11 @@
                         <div class="icon-selector" id="logoSelector">
                             <!-- Injected by JS -->
                         </div>
+                        <div style="margin-top: 10px;">
+                            <label for="customLogoUpload" style="font-size: 0.85em; margin-bottom: 5px; display: block;">Or upload custom logo (transparent PNG/SVG):</label>
+                            <input type="file" id="customLogoUpload" accept="image/png, image/jpeg, image/svg+xml" onchange="handleLogoUpload(event)">
+                            <button id="clearLogoBtn" class="btn btn-secondary-outline btn-sm" style="display: none; margin-top: 5px;" onclick="clearCustomLogo()">Remove Custom Logo</button>
+                        </div>
                     </div>
 
                     <div class="row-controls">
