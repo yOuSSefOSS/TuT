@@ -2657,72 +2657,116 @@ body {
 }
 
 /* ==========================================================================
-   PRINT STYLES - Hides the entire editor dashboard and prints full-bleed A4
+   PRINT STYLES - Hides the entire editor dashboard and prints full-bleed
    ========================================================================== */
 @media print {
-    /* Hide editor UI and backgrounds */
-    #dashboardShell, .sidebar, .sidebar-actions, .preview-viewport {
-        background: none !important;
+    @page {
+        margin: 0 !important;
+        size: auto;
+    }
+
+    /* Completely hide ALL editor chrome - sidebar, tabs, actions, header */
+    .sidebar,
+    .sidebar-content,
+    .sidebar-actions,
+    .sidebar-header,
+    .sidebar-tabs,
+    .tab-btn,
+    .tab-panel,
+    #logoSelector,
+    #pageManagerList,
+    #categoriesAccordion,
+    .footer-row-top,
+    .footer-row-bottom {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        max-width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
         padding: 0 !important;
         margin: 0 !important;
+        border: none !important;
     }
-    
-    body {
-        background-color: #ffffff !important;
-        color: #000000 !important;
+
+    /* Reset body to plain white sheet */
+    body,
+    html {
+        background: #ffffff !important;
         overflow: visible !important;
         height: auto !important;
         width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
+    /* Dashboard becomes a simple block flow */
     .dashboard-container {
         display: block !important;
         height: auto !important;
-        width: auto !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
+    #dashboardShell {
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Preview area fills the whole sheet */
     .preview-viewport {
         display: block !important;
         overflow: visible !important;
         position: static !important;
         width: 100% !important;
-        height: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: none !important;
     }
 
+    /* Remove scaling transform for print */
     .page-scaler-container {
         transform: none !important;
         width: 100% !important;
-        height: 100% !important;
+        height: auto !important;
         display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
+    /* Each menu page fills a printed sheet edge-to-edge */
     .menu-paper-page {
         box-shadow: none !important;
-        margin: 0 0 20mm 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
         border: none !important;
         transform: none !important;
         page-break-after: always !important;
         page-break-inside: avoid !important;
+        break-after: page !important;
         break-inside: avoid !important;
+        width: 100% !important;
+        height: 100vh !important;
+        overflow: hidden !important;
     }
 
-    .menu-paper-page.portrait {
-        width: 210mm !important;
-        height: 297mm !important;
-        padding: 10mm !important;
+    /* The inner menu container keeps its own padding for content breathing room */
+    .menu-paper-page .menu-container {
+        height: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    .menu-paper-page.landscape {
-        width: 297mm !important;
-        height: 210mm !important;
-        padding: 10mm !important;
-    }
-
-    /* Force high-quality color rendering in browsers */
+    /* Force high-quality color printing */
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-    }
+        color-adjust: exact !important;
     }
 }
 

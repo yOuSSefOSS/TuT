@@ -537,6 +537,12 @@ window.updateCustomStyles = function() {
     document.getElementById('titleSizeScaleVal').textContent = `${titleSize}%`;
     document.getElementById('categorySizeScaleVal').textContent = `${categorySize}%`;
     document.getElementById('itemSizeScaleVal').textContent = `${itemSize}%`;
+    document.getElementById('descSizeScaleVal').textContent = `${descSize}%`;
+    document.getElementById('watermarkOpacityVal').textContent = `${watermarkOpacity}%`;
+    document.getElementById('watermarkScaleVal').textContent = `${watermarkScale}%`;
+    
+    saveState();
+};
 
 window.toggleCoverPageSetting = function(checked) {
     appState.showCoverPage = checked;
@@ -560,12 +566,6 @@ window.updateQrSetting = function(key, val) {
     appState[key] = val;
     saveState();
     renderPreview();
-};
-    document.getElementById('descSizeScaleVal').textContent = `${descSize}%`;
-    document.getElementById('watermarkOpacityVal').textContent = `${watermarkOpacity}%`;
-    document.getElementById('watermarkScaleVal').textContent = `${watermarkScale}%`;
-    
-    saveState();
 };
 
 function syncColorPickerUI() {
@@ -1078,57 +1078,45 @@ function renderPreview() {
         // Build page content HTML
         let pageHtml = '';
         
-        // Watermark background
-        if (appState.uploadedLogoDataUrl) {
+        const isCover = pageIdx === 0 && appState.showCoverPage;
+        if (isCover) {
+            pageNode.classList.add('menu-cover-page');
+            
+            let emblemHtml = '';
+            if (appState.uploadedLogoDataUrl) {
+                emblemHtml = `<img src="${appState.uploadedLogoDataUrl}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
+            } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
+                emblemHtml = LOGO_ICONS[appState.logoIcon];
+            }
+            
             pageHtml += `
-                <div class="menu-bg-watermark" style="opacity: var(--menu-watermark-opacity); transform: scale(var(--menu-watermark-scale));">
-                    <img src="${appState.uploadedLogoDataUrl}" style="max-width:100%; opacity:0.1; filter: grayscale(100%);">
+                <div class="menu-cover-emblem">
+                    ${emblemHtml}
                 </div>
+                <h1 class="menu-cover-title">${escapeHtml(appState.cafeName)}</h1>
+                <p class="menu-cover-tagline">${escapeHtml(appState.cafeTagline)}</p>
+                <p class="menu-cover-subtitle">${escapeHtml(appState.coverSubtitle || 'ESTABLISHED 2026')}</p>
             `;
-        } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
-            pageHtml += `
-                <div class="menu-bg-watermark">
-                    ${LOGO_ICONS[appState.logoIcon]}
-                </div>
-            `;
-        }
-        
-        pageHtml += `<div class="menu-container">`;
-        
-        // Header only on first page
-        if (pageIdx === 0) {
-            if (appState.showCoverPage) {
-                // Render Cover Page
+        } else {
+            // Watermark background
+            if (appState.uploadedLogoDataUrl) {
                 pageHtml += `
-                    <div class="cover-page-layout">
-                        <div class="cover-page-content">
-                `;
-                if (appState.uploadedLogoDataUrl) {
-                    pageHtml += `
-                        <div class="cover-logo">
-                            <img src="${appState.uploadedLogoDataUrl}" style="max-width: 120px; height: auto;">
-                        </div>
-                    `;
-                } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
-                    pageHtml += `
-                        <div class="cover-logo">
-                            ${LOGO_ICONS[appState.logoIcon]}
-                        </div>
-                    `;
-                }
-                
-                pageHtml += `
-                            <h1 class="cover-title">${escapeHtml(appState.cafeName)}</h1>
-                            <p class="cover-subtitle">${escapeHtml(appState.coverSubtitle || appState.cafeTagline)}</p>
-                `;
-                if (appState.coverEmblem) {
-                    pageHtml += `<div class="cover-emblem">${escapeHtml(appState.coverEmblem)}</div>`;
-                }
-                pageHtml += `
-                        </div>
+                    <div class="menu-bg-watermark" style="opacity: var(--menu-watermark-opacity); transform: scale(var(--menu-watermark-scale));">
+                        <img src="${appState.uploadedLogoDataUrl}" style="max-width:100%; opacity:0.1; filter: grayscale(100%);">
                     </div>
                 `;
-            } else {
+            } else if (appState.logoIcon !== 'none' && LOGO_ICONS[appState.logoIcon]) {
+                pageHtml += `
+                    <div class="menu-bg-watermark">
+                        ${LOGO_ICONS[appState.logoIcon]}
+                    </div>
+                `;
+            }
+            
+            pageHtml += `<div class="menu-container">`;
+            
+            // Header only on first page
+            if (pageIdx === 0) {
                 pageHtml += `
                     <header class="menu-header">
                 `;
@@ -1151,140 +1139,146 @@ function renderPreview() {
                         <div class="menu-header-divider"></div>
                     </header>
                 `;
+            } else {
+                // Smaller page header indicator for Page 2, 3 etc.
+                pageHtml += `
+                    <header class="menu-header" style="margin-bottom: 4mm;">
+                        <p style="font-size: 9px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; margin-bottom: 0;">${escapeHtml(appState.cafeName)} &mdash; ${escapeHtml(page.title)}</p>
+                        <div class="menu-header-divider" style="width: 20%; margin-top: 2mm; opacity: 0.4;"></div>
+                    </header>
+                `;
             }
-        } else {
-            // Smaller page header indicator for Page 2, 3 etc.
-            pageHtml += `
-                <header class="menu-header" style="margin-bottom: 4mm;">
-                    <p style="font-size: 9px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; margin-bottom: 0;">${escapeHtml(appState.cafeName)} &mdash; ${escapeHtml(page.title)}</p>
-                    <div class="menu-header-divider" style="width: 20%; margin-top: 2mm; opacity: 0.4;"></div>
-                </header>
-            `;
-        }
-        
-        // Categories list
-        pageHtml += `<div class="menu-body">`;
-        
-        // Categories filter for this page
-        const pageCategories = appState.categories.filter(cat => {
-            // Default empty or legacy to Page 1
-            if (!cat.pageId) return pageIdx === 0;
-            return cat.pageId === page.id;
-        });
-        
-        if (pageCategories.length === 0) {
-            pageHtml += `
-                <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; opacity: 0.4; font-style: italic; font-size: 11px; border: 1px dashed var(--menu-gold); margin: 20px; border-radius: 6px; padding: 30px; text-align: center; color: var(--menu-text); z-index: 2;">
-                    No categories assigned to this page. Assign a category to this page under the Content tab.
-                </div>
-            `;
-        } else {
-            pageCategories.forEach(cat => {
-                if (cat.items.length === 0) return;
-                
-                let layoutClass = '';
-                if (cat.layoutColumns === 2) {
-                    layoutClass = ' layout-grid-2';
-                }
-
-                pageHtml += `
-                    <section class="menu-category-node">
-                        <div class="menu-category-title-container">
-                            <h2 class="menu-category-title">${escapeHtml(cat.name)}</h2>
-                        </div>
-                        <div class="menu-item-list${layoutClass}">
-                `;
-                
-                cat.items.forEach(item => {
-                    pageHtml += `
-                        <div class="menu-item-node">
-                            <div class="menu-item-main-row">
-                                <span class="menu-item-name">
-                                    ${escapeHtml(item.name)}
-                                    ${renderItemBadgeHtml(item.tag)}
-                                </span>
-                    `;
-                    
-                    if (appState.showDottedLeaders) {
-                        pageHtml += `<span class="dotted-leader"></span>`;
-                    } else {
-                        pageHtml += `<span></span>`;
-                    }
-                    
-                    pageHtml += `
-                                <span class="menu-item-price">${renderItemPriceHtml(item)}</span>
-                            </div>
-                    `;
-                    
-                    if (appState.showDescriptions && item.desc) {
-                        pageHtml += `
-                            <p class="menu-item-description">${escapeHtml(item.desc)}</p>
-                        `;
-                    }
-                    
-                    pageHtml += `</div>`; // end item
-                });
-                
-                pageHtml += `
-                        </div>
-                    </section>
-                `;
+            
+            // Categories list
+            pageHtml += `<div class="menu-body">`;
+            
+            // Categories filter for this page
+            const pageCategories = appState.categories.filter(cat => {
+                // Default empty or legacy to Page 1
+                if (!cat.pageId) return pageIdx === 0;
+                return cat.pageId === page.id;
             });
+            
+            if (pageCategories.length === 0) {
+                pageHtml += `
+                    <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; opacity: 0.4; font-style: italic; font-size: 11px; border: 1px dashed var(--menu-gold); margin: 20px; border-radius: 6px; padding: 30px; text-align: center; color: var(--menu-text); z-index: 2;">
+                        No categories assigned to this page. Assign a category to this page under the Content tab.
+                    </div>
+                `;
+            } else {
+                pageCategories.forEach(cat => {
+                    if (cat.items.length === 0) return;
+                    
+                    let layoutClass = '';
+                    if (cat.layoutColumns === 2) {
+                        layoutClass = ' layout-grid-2';
+                    }
+
+                    pageHtml += `
+                        <section class="menu-category-node">
+                            <div class="menu-category-title-container">
+                                <h2 class="menu-category-title">${escapeHtml(cat.name)}</h2>
+                            </div>
+                            <div class="menu-item-list${layoutClass}">
+                    `;
+                    
+                    cat.items.forEach(item => {
+                        pageHtml += `
+                            <div class="menu-item-node">
+                                <div class="menu-item-main-row">
+                                    <span class="menu-item-name">
+                                        ${escapeHtml(item.name)}
+                                        ${renderItemBadgeHtml(item.tag)}
+                                    </span>
+                        `;
+                        
+                        if (appState.showDottedLeaders) {
+                            pageHtml += `<span class="dotted-leader"></span>`;
+                        } else {
+                            pageHtml += `<span></span>`;
+                        }
+                        
+                        pageHtml += `
+                                    <span class="menu-item-price">${renderItemPriceHtml(item)}</span>
+                                </div>
+                        `;
+                        
+                        if (appState.showDescriptions && item.desc) {
+                            pageHtml += `
+                                <p class="menu-item-description">${escapeHtml(item.desc)}</p>
+                            `;
+                        }
+                        
+                        pageHtml += `</div>`; // end item
+                    });
+                    
+                    pageHtml += `
+                            </div>
+                        </section>
+                    `;
+                });
+            }
+            
+            pageHtml += `</div>`; // end menu body
+            
+            // Footer only on last page
+            if (pageIdx === appState.pages.length - 1 && appState.menuFooter) {
+                pageHtml += `
+                    <footer class="menu-footer">
+                        <p>${escapeHtml(appState.menuFooter)}</p>
+                    </footer>
+                `;
+            } else {
+                // Render a clean page number footer
+                pageHtml += `
+                    <footer class="menu-footer" style="margin-top: auto; padding-top: 2mm; border-top: none; opacity: 0.6; font-size: 8px;">
+                        <p>Page ${pageIdx + 1} of ${appState.pages.length}</p>
+                    </footer>
+                `;
+            }
+            
+            // QR Code on last page
+            if (appState.showQr && pageIdx === appState.pages.length - 1) {
+                const qrPosClass = appState.qrPosition === 'header' ? 'header-qr' : 'footer-qr';
+                const qrText = escapeHtml(appState.qrText || 'Scan Me');
+                pageHtml += `
+                    <div class="menu-qr-container ${qrPosClass}">
+                        <div class="menu-qr-code" id="qr-code-placeholder-${page.id}"></div>
+                        ${qrText ? `<div class="menu-qr-text">${qrText}</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            pageHtml += `</div>`; // end menu container
         }
-        
-        pageHtml += `</div>`; // end menu body
-        
-        // Footer only on last page
-        if (pageIdx === appState.pages.length - 1 && appState.menuFooter) {
-            pageHtml += `
-                <footer class="menu-footer">
-                    <p>${escapeHtml(appState.menuFooter)}</p>
-                </footer>
-            `;
-        } else {
-            // Render a clean page number footer
-            pageHtml += `
-                <footer class="menu-footer" style="margin-top: auto; padding-top: 2mm; border-top: none; opacity: 0.6; font-size: 8px;">
-                    <p>Page ${pageIdx + 1} of ${appState.pages.length}</p>
-                </footer>
-            `;
-        }
-        
-        // QR Code on last page
-        if (appState.showQr && pageIdx === appState.pages.length - 1) {
-            const qrPos = appState.qrPosition || 'bottom-right';
-            const qrText = escapeHtml(appState.qrText || 'Scan Me');
-            // Basic SVG QR placeholder
-            const qrSvg = `
-            <svg viewBox="0 0 100 100" width="100%" height="100%" fill="currentColor">
-                <rect width="100" height="100" fill="white" />
-                <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z" fill="black" />
-                <path d="M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="black" />
-                <path d="M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z" fill="black" />
-                <rect x="40" y="10" width="10" height="10" fill="black" />
-                <rect x="55" y="20" width="10" height="10" fill="black" />
-                <rect x="10" y="40" width="10" height="10" fill="black" />
-                <rect x="25" y="55" width="10" height="10" fill="black" />
-                <rect x="40" y="40" width="10" height="10" fill="black" />
-                <rect x="40" y="55" width="25" height="10" fill="black" />
-                <rect x="70" y="40" width="20" height="20" fill="black" />
-                <rect x="55" y="70" width="10" height="10" fill="black" />
-                <rect x="70" y="70" width="20" height="20" fill="black" />
-                <rect x="40" y="80" width="10" height="10" fill="black" />
-            </svg>`;
-            pageHtml += `
-                <div class="qr-container ${qrPos}">
-                    <div class="qr-image">${qrSvg}</div>
-                    ${qrText ? `<div class="qr-text">${qrText}</div>` : ''}
-                </div>
-            `;
-        }
-        
-        pageHtml += `</div>`; // end menu container
         
         pageNode.innerHTML = pageHtml;
         scaler.appendChild(pageNode);
     });
+    
+    // Generate actual dynamic QR codes
+    if (appState.showQr) {
+        appState.pages.forEach((page, pageIdx) => {
+            if (pageIdx === appState.pages.length - 1) {
+                const qrEl = document.getElementById(`qr-code-placeholder-${page.id}`);
+                if (qrEl) {
+                    qrEl.innerHTML = '';
+                    try {
+                        new QRCode(qrEl, {
+                            text: appState.qrText || window.location.href,
+                            width: 52,
+                            height: 52,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
+                    } catch (e) {
+                        console.error("QR Code generation failed:", e);
+                    }
+                }
+            }
+        });
+    }
 }
 
 function renderItemPriceHtml(item) {
@@ -1350,4 +1344,249 @@ window.addEventListener('resize', () => {
 // --- Print Action Dialog Trigger ---
 window.triggerPrint = function() {
     window.print();
+};
+
+// ==========================================================================
+// EXPORT: JSON Backup
+// ==========================================================================
+window.exportMenuJson = function() {
+    const exportBtn = document.querySelector('[onclick="exportMenuJson()"]');
+    if (exportBtn) {
+        const originalHtml = exportBtn.innerHTML;
+        exportBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Exporting...';
+        exportBtn.disabled = true;
+        setTimeout(() => {
+            exportBtn.innerHTML = originalHtml;
+            exportBtn.disabled = false;
+        }, 1200);
+    }
+    
+    try {
+        const data = JSON.stringify(appState, null, 2);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const safeName = (appState.cafeName || 'menu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        a.href = url;
+        a.download = `${safeName}_menu_backup.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        alert('Export failed: ' + e.message);
+        console.error('Export error:', e);
+    }
+};
+
+// ==========================================================================
+// IMPORT: JSON Backup
+// ==========================================================================
+window.importMenuJson = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            
+            // Safe merge with defaults to avoid missing keys
+            appState = {
+                ...JSON.parse(JSON.stringify(DEFAULT_MENU_DATA)),
+                ...imported
+            };
+            appState.customStyle = {
+                ...DEFAULT_MENU_DATA.customStyle,
+                ...(imported.customStyle || {})
+            };
+            if (!appState.pages || appState.pages.length === 0) {
+                appState.pages = JSON.parse(JSON.stringify(DEFAULT_MENU_DATA.pages));
+            }
+            
+            // Persist and re-render everything
+            localStorage.setItem('tut_menu_creator_state', JSON.stringify(appState));
+            
+            // Sync all sidebar inputs
+            document.getElementById('cafeName').value = appState.cafeName;
+            document.getElementById('cafeTagline').value = appState.cafeTagline;
+            document.getElementById('menuFooter').value = appState.menuFooter;
+            document.getElementById('paperSize').value = appState.paperSize;
+            document.getElementById('paperOrientation').value = appState.paperOrientation;
+            document.getElementById('fontScale').value = appState.fontScale;
+            document.getElementById('fontScaleVal').textContent = `${appState.fontScale}%`;
+            document.getElementById('itemSpacing').value = appState.itemSpacing;
+            document.getElementById('itemSpacingVal').textContent = getSpacingLabel(appState.itemSpacing);
+            document.getElementById('currencySymbol').value = appState.currencySymbol;
+            document.getElementById('showDescriptions').checked = appState.showDescriptions;
+            document.getElementById('showDottedLeaders').checked = appState.showDottedLeaders;
+            document.getElementById('showCoverPage').checked = appState.showCoverPage;
+            document.getElementById('coverEmblem').value = appState.coverEmblem;
+            document.getElementById('coverSubtitle').value = appState.coverSubtitle || '';
+            document.getElementById('showQr').checked = appState.showQr;
+            document.getElementById('qrText').value = appState.qrText;
+            document.getElementById('qrPosition').value = appState.qrPosition;
+            
+            if (appState.uploadedLogoDataUrl) {
+                document.getElementById('clearLogoBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('clearLogoBtn').style.display = 'none';
+            }
+            
+            syncTypographyInputs();
+            syncColorPickerUI();
+            renderTemplatesGrid();
+            renderLogoSelector();
+            renderPageManager();
+            renderContentAccordion();
+            renderPreview();
+            setTimeout(handleResize, 100);
+            
+            // Reset the file input so the same file can be re-imported if needed
+            event.target.value = '';
+        } catch (err) {
+            alert('Import failed. The file may not be a valid TuT menu backup.\n' + err.message);
+            console.error('Import error:', err);
+        }
+    };
+    reader.readAsText(file);
+};
+
+// ==========================================================================
+// EXPORT: PNG (one file per page)
+// ==========================================================================
+window.downloadMenuPng = async function() {
+    const scaler = document.getElementById('pageScaler');
+    const pages = document.querySelectorAll('.menu-paper-page');
+    if (!pages.length) { alert('Nothing to export.'); return; }
+    
+    const pngBtn = document.querySelector('[onclick="downloadMenuPng()"]');
+    let originalHtml = '';
+    if (pngBtn) {
+        originalHtml = pngBtn.innerHTML;
+        pngBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Capturing...';
+        pngBtn.disabled = true;
+    }
+    
+    // Remove viewport scale so html2canvas captures at full resolution
+    const savedTransform = scaler.style.transform;
+    scaler.style.transform = 'none';
+    scaler.style.transformOrigin = 'top left';
+    
+    try {
+        for (let i = 0; i < pages.length; i++) {
+            const page = pages[i];
+            if (pngBtn) pngBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Page ${i + 1}/${pages.length}`;
+            
+            const canvas = await html2canvas(page, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null,
+                logging: false
+            });
+            
+            const link = document.createElement('a');
+            const safeName = (appState.cafeName || 'menu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            link.download = `${safeName}_page${i + 1}.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Brief pause between pages to avoid browser throttling
+            if (i < pages.length - 1) await new Promise(r => setTimeout(r, 300));
+        }
+    } catch (err) {
+        alert('PNG export failed: ' + err.message);
+        console.error('PNG export error:', err);
+    } finally {
+        scaler.style.transform = savedTransform;
+        if (pngBtn) {
+            pngBtn.innerHTML = originalHtml;
+            pngBtn.disabled = false;
+        }
+        handleResize();
+    }
+};
+
+// ==========================================================================
+// EXPORT: PDF (all pages compiled into one PDF)
+// ==========================================================================
+window.downloadMenuPdf = async function() {
+    const scaler = document.getElementById('pageScaler');
+    const pages = document.querySelectorAll('.menu-paper-page');
+    if (!pages.length) { alert('Nothing to export.'); return; }
+    
+    const pdfBtn = document.querySelector('[onclick="downloadMenuPdf()"]');
+    let originalHtml = '';
+    if (pdfBtn) {
+        originalHtml = pdfBtn.innerHTML;
+        pdfBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Building PDF...';
+        pdfBtn.disabled = true;
+    }
+    
+    // Remove viewport scale so html2canvas captures at full resolution
+    const savedTransform = scaler.style.transform;
+    scaler.style.transform = 'none';
+    scaler.style.transformOrigin = 'top left';
+    
+    try {
+        const isLandscape = appState.paperOrientation === 'landscape';
+        
+        // Paper dimensions in mm
+        let pW, pH;
+        if (appState.paperSize === 'letter') {
+            pW = isLandscape ? 279.4 : 215.9;
+            pH = isLandscape ? 215.9 : 279.4;
+        } else {
+            // A4 default
+            pW = isLandscape ? 297 : 210;
+            pH = isLandscape ? 210 : 297;
+        }
+        
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: isLandscape ? 'landscape' : 'portrait',
+            unit: 'mm',
+            format: appState.paperSize === 'letter' ? 'letter' : 'a4'
+        });
+        
+        for (let i = 0; i < pages.length; i++) {
+            const page = pages[i];
+            if (pdfBtn) pdfBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Page ${i + 1}/${pages.length}`;
+            
+            const canvas = await html2canvas(page, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null,
+                logging: false
+            });
+            
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            
+            if (i > 0) {
+                pdf.addPage(appState.paperSize === 'letter' ? 'letter' : 'a4', isLandscape ? 'landscape' : 'portrait');
+            }
+            
+            // Fill the entire page with the captured image (full-bleed)
+            pdf.addImage(imgData, 'JPEG', 0, 0, pW, pH);
+            
+            // Brief pause between pages
+            if (i < pages.length - 1) await new Promise(r => setTimeout(r, 300));
+        }
+        
+        const safeName = (appState.cafeName || 'menu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        pdf.save(`${safeName}_menu.pdf`);
+        
+    } catch (err) {
+        alert('PDF export failed: ' + err.message);
+        console.error('PDF export error:', err);
+    } finally {
+        scaler.style.transform = savedTransform;
+        if (pdfBtn) {
+            pdfBtn.innerHTML = originalHtml;
+            pdfBtn.disabled = false;
+        }
+        handleResize();
+    }
 };

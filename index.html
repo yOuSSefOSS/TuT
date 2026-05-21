@@ -11,6 +11,10 @@
     <!-- FontAwesome for icons in the dashboard -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <!-- Dashboard Shell (hidden during print) -->
@@ -191,8 +195,8 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="qrText">QR Code URL / Text</label>
-                        <input type="text" id="qrText" value="https://github.com/oss" placeholder="e.g. https://tutcafe.menu" oninput="updateQrSetting('qrText', this.value)">
+                        <label for="qrText">QR Code URL <small style="opacity:0.6;font-weight:400">(must be a valid URL)</small></label>
+                        <input type="url" id="qrText" value="https://github.com/yOuSSefOSS/TuT" placeholder="e.g. https://tutcafe.menu" oninput="updateQrSetting('qrText', this.value)">
                     </div>
 
                     <div class="control-group">
@@ -329,12 +333,26 @@
 
             <!-- Footer Actions inside Sidebar -->
             <footer class="sidebar-actions">
-                <button class="btn btn-secondary" onclick="resetDemoData()">
-                    <i class="fa-solid fa-rotate-left"></i> Reset Demo
-                </button>
-                <button class="btn btn-primary btn-lg" onclick="triggerPrint()">
-                    <i class="fa-solid fa-print"></i> Print / Save PDF
-                </button>
+                <div class="footer-row-top" style="display:flex;gap:6px;margin-bottom:6px;">
+                    <button class="btn btn-secondary" style="flex:1" onclick="exportMenuJson()" title="Export menu data as JSON backup">
+                        <i class="fa-solid fa-file-export"></i> Export
+                    </button>
+                    <label class="btn btn-secondary" style="flex:1;cursor:pointer;margin:0;display:flex;align-items:center;justify-content:center;gap:6px" title="Import a previously exported JSON backup">
+                        <i class="fa-solid fa-file-import"></i> Import
+                        <input type="file" id="importJsonInput" accept=".json" style="display:none" onchange="importMenuJson(event)">
+                    </label>
+                    <button class="btn btn-secondary" style="flex:1" onclick="downloadMenuPng()" title="Download menu as PNG image">
+                        <i class="fa-solid fa-image"></i> PNG
+                    </button>
+                </div>
+                <div class="footer-row-bottom" style="display:flex;gap:6px;">
+                    <button class="btn btn-secondary" onclick="resetDemoData()" style="flex:1">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                    <button class="btn btn-primary" style="flex:2" onclick="downloadMenuPdf()">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
             </footer>
         </aside>
 
